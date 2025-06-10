@@ -1,14 +1,5 @@
-// src/components/TaskManager.tsx
 import React, { useState } from 'react';
-import {
-  Plus,
-  Clock,
-  CheckCircle2,
-  Circle,
-  Trash2,
-  Star,
-  Hash
-} from 'lucide-react';
+import { Plus, Clock, CheckCircle2, Circle, Trash2, Star, Hash } from 'lucide-react';
 import { Task, TaskCategory, TimeSlot } from '../types';
 
 interface TaskManagerProps {
@@ -18,11 +9,11 @@ interface TaskManagerProps {
   onDeleteTask: (taskId: string) => void;
 }
 
-export const TaskManager: React.FC<TaskManagerProps> = ({
-  tasks,
-  onAddTask,
-  onToggleTask,
-  onDeleteTask
+export const TaskManager: React.FC<TaskManagerProps> = ({ 
+  tasks, 
+  onAddTask, 
+  onToggleTask, 
+  onDeleteTask 
 }) => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [newTask, setNewTask] = useState({
@@ -34,15 +25,7 @@ export const TaskManager: React.FC<TaskManagerProps> = ({
   });
 
   const timeSlots: TimeSlot[] = ['Morning', 'Afternoon', 'Evening'];
-  const categories: TaskCategory[] = [
-    'DSA',
-    'Web Dev',
-    'Data Science',
-    'CS Fundamentals',
-    'System Design',
-    'Mock Interview',
-    'English Speaking Practice'
-  ];
+  const categories: TaskCategory[] = ['DSA', 'Web Dev', 'Data Science', 'CS Fundamentals', 'System Design', 'Mock Interview', 'English Speaking Practice'];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,12 +36,13 @@ export const TaskManager: React.FC<TaskManagerProps> = ({
       category: newTask.category,
       timeSlot: newTask.timeSlot,
       xp: newTask.xp,
-      completed: false,
-      // only include questionsCount for DSA
-      ...(newTask.category === 'DSA' && {
-        questionsCount: newTask.questionsCount
-      })
+      completed: false
     };
+
+    // Add questionsCount only for DSA tasks
+    if (newTask.category === 'DSA') {
+      taskToAdd.questionsCount = newTask.questionsCount;
+    }
 
     onAddTask(taskToAdd);
 
@@ -73,13 +57,13 @@ export const TaskManager: React.FC<TaskManagerProps> = ({
   };
 
   const tasksByTimeSlot = timeSlots.reduce((acc, slot) => {
-    acc[slot] = tasks.filter(t => t.timeSlot === slot);
+    acc[slot] = tasks.filter(task => task.timeSlot === slot);
     return acc;
   }, {} as Record<TimeSlot, Task[]>);
 
   const getCategoryColor = (category: TaskCategory) => {
-    const colors: Record<TaskCategory, string> = {
-      DSA: 'bg-blue-900 text-blue-200 border border-blue-700',
+    const colors = {
+      'DSA': 'bg-blue-900 text-blue-200 border border-blue-700',
       'Web Dev': 'bg-green-900 text-green-200 border border-green-700',
       'Data Science': 'bg-purple-900 text-purple-200 border border-purple-700',
       'CS Fundamentals': 'bg-red-900 text-red-200 border border-red-700',
@@ -103,6 +87,7 @@ export const TaskManager: React.FC<TaskManagerProps> = ({
         </button>
       </div>
 
+      {/* Add Task Form */}
       {showAddForm && (
         <div className="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700">
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -113,7 +98,7 @@ export const TaskManager: React.FC<TaskManagerProps> = ({
               <input
                 type="text"
                 value={newTask.title}
-                onChange={e => setNewTask({ ...newTask, title: e.target.value })}
+                onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-700 text-white"
                 placeholder="Enter your task..."
                 autoFocus
@@ -127,15 +112,11 @@ export const TaskManager: React.FC<TaskManagerProps> = ({
                 </label>
                 <select
                   value={newTask.category}
-                  onChange={e =>
-                    setNewTask({ ...newTask, category: e.target.value as TaskCategory })
-                  }
+                  onChange={(e) => setNewTask({ ...newTask, category: e.target.value as TaskCategory })}
                   className="w-full px-3 py-2 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-700 text-white"
                 >
-                  {categories.map(cat => (
-                    <option key={cat} value={cat}>
-                      {cat}
-                    </option>
+                  {categories.map(category => (
+                    <option key={category} value={category}>{category}</option>
                   ))}
                 </select>
               </div>
@@ -146,19 +127,16 @@ export const TaskManager: React.FC<TaskManagerProps> = ({
                 </label>
                 <select
                   value={newTask.timeSlot}
-                  onChange={e =>
-                    setNewTask({ ...newTask, timeSlot: e.target.value as TimeSlot })
-                  }
+                  onChange={(e) => setNewTask({ ...newTask, timeSlot: e.target.value as TimeSlot })}
                   className="w-full px-3 py-2 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-700 text-white"
                 >
                   {timeSlots.map(slot => (
-                    <option key={slot} value={slot}>
-                      {slot}
-                    </option>
+                    <option key={slot} value={slot}>{slot}</option>
                   ))}
                 </select>
               </div>
 
+              {/* DSA Questions Count - Only show for DSA category */}
               {newTask.category === 'DSA' && (
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">
@@ -166,15 +144,10 @@ export const TaskManager: React.FC<TaskManagerProps> = ({
                   </label>
                   <input
                     type="number"
-                    min={1}
-                    max={50}
+                    min="1"
+                    max="50"
                     value={newTask.questionsCount}
-                    onChange={e =>
-                      setNewTask({
-                        ...newTask,
-                        questionsCount: parseInt(e.target.value) || 1
-                      })
-                    }
+                    onChange={(e) => setNewTask({ ...newTask, questionsCount: parseInt(e.target.value) || 1 })}
                     className="w-full px-3 py-2 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-700 text-white"
                     placeholder="Number of questions"
                   />
@@ -187,9 +160,7 @@ export const TaskManager: React.FC<TaskManagerProps> = ({
                 </label>
                 <select
                   value={newTask.xp}
-                  onChange={e =>
-                    setNewTask({ ...newTask, xp: parseInt(e.target.value) })
-                  }
+                  onChange={(e) => setNewTask({ ...newTask, xp: parseInt(e.target.value) })}
                   className="w-full px-3 py-2 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-700 text-white"
                 >
                   <option value={25}>Easy (25 XP)</option>
@@ -219,6 +190,7 @@ export const TaskManager: React.FC<TaskManagerProps> = ({
         </div>
       )}
 
+      {/* Time Slot Sections */}
       <div className="grid gap-6">
         {timeSlots.map(slot => (
           <div key={slot} className="bg-gray-800 rounded-xl p-6 shadow-lg">
@@ -229,6 +201,7 @@ export const TaskManager: React.FC<TaskManagerProps> = ({
                 {tasksByTimeSlot[slot].length} tasks
               </span>
             </div>
+
             <div className="space-y-3">
               {tasksByTimeSlot[slot].length === 0 ? (
                 <div className="text-center py-8 text-gray-400">
@@ -259,22 +232,13 @@ export const TaskManager: React.FC<TaskManagerProps> = ({
                         <Circle className="w-5 h-5" />
                       )}
                     </button>
+
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <span
-                          className={`text-sm font-medium ${
-                            task.completed
-                              ? 'line-through text-gray-500'
-                              : 'text-white'
-                          }`}
-                        >
+                        <span className={`text-sm font-medium ${task.completed ? 'line-through text-gray-500' : 'text-white'}`}>
                           {task.title}
                         </span>
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(
-                            task.category
-                          )}`}
-                        >
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(task.category)}`}>
                           {task.category}
                         </span>
                         {task.category === 'DSA' && task.questionsCount && (
@@ -289,6 +253,7 @@ export const TaskManager: React.FC<TaskManagerProps> = ({
                         <span>{task.xp} XP</span>
                       </div>
                     </div>
+
                     <button
                       onClick={() => onDeleteTask(task.id)}
                       className="text-gray-400 hover:text-red-500 transition-colors"
