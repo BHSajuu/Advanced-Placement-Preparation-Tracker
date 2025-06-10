@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Plus, Clock, CheckCircle2, Circle, Trash2, Star, Hash } from 'lucide-react';
-import { Task, TaskCategory, TimeSlot } from '../types';
+import { Plus, Clock, CheckCircle2, Circle, Trash2, Star, Hash, Globe, Database, Cpu, Network, MessageSquare, Mic } from 'lucide-react';
+import { Task, TaskCategory, TimeSlot, UserGoals } from '../types';
 
 interface TaskManagerProps {
   tasks: Task[];
+  userGoals?: UserGoals;
   onAddTask: (task: Omit<Task, 'id' | 'createdAt'>) => void;
   onToggleTask: (taskId: string) => void;
   onDeleteTask: (taskId: string) => void;
@@ -11,6 +12,7 @@ interface TaskManagerProps {
 
 export const TaskManager: React.FC<TaskManagerProps> = ({ 
   tasks, 
+  userGoals,
   onAddTask, 
   onToggleTask, 
   onDeleteTask 
@@ -21,11 +23,29 @@ export const TaskManager: React.FC<TaskManagerProps> = ({
     category: 'DSA' as TaskCategory,
     timeSlot: 'Morning' as TimeSlot,
     xp: 50,
-    questionsCount: 1
+    questionsCount: 1,
+    projectName: '',
+    caseStudyName: '',
+    tutorialCount: 1,
+    sessionCount: 1,
+    chapterName: ''
   });
 
   const timeSlots: TimeSlot[] = ['Morning', 'Afternoon', 'Evening'];
   const categories: TaskCategory[] = ['DSA', 'Web Dev', 'Data Science', 'CS Fundamentals', 'System Design', 'Mock Interview', 'English Speaking Practice'];
+
+  const getCategoryIcon = (category: TaskCategory) => {
+    const icons = {
+      'DSA': <Hash className="w-4 h-4" />,
+      'Web Dev': <Globe className="w-4 h-4" />,
+      'Data Science': <Database className="w-4 h-4" />,
+      'CS Fundamentals': <Cpu className="w-4 h-4" />,
+      'System Design': <Network className="w-4 h-4" />,
+      'Mock Interview': <MessageSquare className="w-4 h-4" />,
+      'English Speaking Practice': <Mic className="w-4 h-4" />
+    };
+    return icons[category];
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,9 +59,29 @@ export const TaskManager: React.FC<TaskManagerProps> = ({
       completed: false
     };
 
-    // Add questionsCount only for DSA tasks
-    if (newTask.category === 'DSA') {
-      taskToAdd.questionsCount = newTask.questionsCount;
+    // Add category-specific fields
+    switch (newTask.category) {
+      case 'DSA':
+        taskToAdd.questionsCount = newTask.questionsCount;
+        break;
+      case 'Web Dev':
+        if (newTask.projectName) taskToAdd.projectName = newTask.projectName;
+        break;
+      case 'System Design':
+        if (newTask.caseStudyName) taskToAdd.caseStudyName = newTask.caseStudyName;
+        break;
+      case 'Data Science':
+        taskToAdd.tutorialCount = newTask.tutorialCount;
+        break;
+      case 'Mock Interview':
+        taskToAdd.sessionCount = newTask.sessionCount;
+        break;
+      case 'English Speaking Practice':
+        taskToAdd.sessionCount = newTask.sessionCount;
+        break;
+      case 'CS Fundamentals':
+        if (newTask.chapterName) taskToAdd.chapterName = newTask.chapterName;
+        break;
     }
 
     onAddTask(taskToAdd);
@@ -51,7 +91,12 @@ export const TaskManager: React.FC<TaskManagerProps> = ({
       category: 'DSA',
       timeSlot: 'Morning',
       xp: 50,
-      questionsCount: 1
+      questionsCount: 1,
+      projectName: '',
+      caseStudyName: '',
+      tutorialCount: 1,
+      sessionCount: 1,
+      chapterName: ''
     });
     setShowAddForm(false);
   };
@@ -74,10 +119,154 @@ export const TaskManager: React.FC<TaskManagerProps> = ({
     return colors[category];
   };
 
+  const renderCategorySpecificFields = () => {
+    switch (newTask.category) {
+      case 'DSA':
+        return (
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Questions Count
+            </label>
+            <input
+              type="number"
+              min="1"
+              max="50"
+              value={newTask.questionsCount}
+              onChange={(e) => setNewTask({ ...newTask, questionsCount: parseInt(e.target.value) || 1 })}
+              className="w-full px-3 py-2 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-700 text-white"
+              placeholder="Number of questions"
+            />
+          </div>
+        );
+
+      case 'Web Dev':
+        return (
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Project Name (Optional)
+            </label>
+            <select
+              value={newTask.projectName}
+              onChange={(e) => setNewTask({ ...newTask, projectName: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-700 text-white"
+            >
+              <option value="">Select project or leave blank for daily task</option>
+              {userGoals?.webDevProjects.map((project, index) => (
+                <option key={index} value={project}>{project}</option>
+              ))}
+            </select>
+          </div>
+        );
+
+      case 'System Design':
+        return (
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Case Study Name
+            </label>
+            <select
+              value={newTask.caseStudyName}
+              onChange={(e) => setNewTask({ ...newTask, caseStudyName: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-700 text-white"
+            >
+              <option value="">Select case study</option>
+              {userGoals?.systemDesignCases.map((caseStudy, index) => (
+                <option key={index} value={caseStudy}>{caseStudy}</option>
+              ))}
+            </select>
+          </div>
+        );
+
+      case 'Data Science':
+        return (
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Tutorial Count
+            </label>
+            <input
+              type="number"
+              min="1"
+              max="20"
+              value={newTask.tutorialCount}
+              onChange={(e) => setNewTask({ ...newTask, tutorialCount: parseInt(e.target.value) || 1 })}
+              className="w-full px-3 py-2 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-700 text-white"
+              placeholder="Number of tutorials"
+            />
+          </div>
+        );
+
+      case 'Mock Interview':
+      case 'English Speaking Practice':
+        return (
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Session Count
+            </label>
+            <input
+              type="number"
+              min="1"
+              max="10"
+              value={newTask.sessionCount}
+              onChange={(e) => setNewTask({ ...newTask, sessionCount: parseInt(e.target.value) || 1 })}
+              className="w-full px-3 py-2 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-700 text-white"
+              placeholder="Number of sessions"
+            />
+          </div>
+        );
+
+      case 'CS Fundamentals':
+        return (
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Chapter/Topic
+            </label>
+            <select
+              value={newTask.chapterName}
+              onChange={(e) => setNewTask({ ...newTask, chapterName: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-700 text-white"
+            >
+              <option value="">Select chapter/topic</option>
+              {userGoals?.csFundamentalsChapters.map((chapter, index) => (
+                <option key={index} value={chapter}>{chapter}</option>
+              ))}
+            </select>
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  const getTaskDetails = (task: Task) => {
+    const details = [];
+    
+    if (task.questionsCount) {
+      details.push(`${task.questionsCount} questions`);
+    }
+    if (task.projectName) {
+      details.push(`Project: ${task.projectName}`);
+    }
+    if (task.caseStudyName) {
+      details.push(`Case: ${task.caseStudyName}`);
+    }
+    if (task.tutorialCount) {
+      details.push(`${task.tutorialCount} tutorials`);
+    }
+    if (task.sessionCount) {
+      details.push(`${task.sessionCount} sessions`);
+    }
+    if (task.chapterName) {
+      details.push(`Chapter: ${task.chapterName}`);
+    }
+    
+    return details.join(' • ');
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-white">Daily Planner</h2>
+        <h2 className="text-2xl font-bold text-white">Smart Task Planner</h2>
         <button
           onClick={() => setShowAddForm(true)}
           className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
@@ -105,7 +294,7 @@ export const TaskManager: React.FC<TaskManagerProps> = ({
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
                   Category
@@ -136,24 +325,6 @@ export const TaskManager: React.FC<TaskManagerProps> = ({
                 </select>
               </div>
 
-              {/* DSA Questions Count - Only show for DSA category */}
-              {newTask.category === 'DSA' && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Questions Count
-                  </label>
-                  <input
-                    type="number"
-                    min="1"
-                    max="50"
-                    value={newTask.questionsCount}
-                    onChange={(e) => setNewTask({ ...newTask, questionsCount: parseInt(e.target.value) || 1 })}
-                    className="w-full px-3 py-2 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-700 text-white"
-                    placeholder="Number of questions"
-                  />
-                </div>
-              )}
-
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
                   XP Value
@@ -169,6 +340,11 @@ export const TaskManager: React.FC<TaskManagerProps> = ({
                   <option value={200}>Epic (200 XP)</option>
                 </select>
               </div>
+            </div>
+
+            {/* Category-specific fields */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {renderCategorySpecificFields()}
             </div>
 
             <div className="flex gap-3">
@@ -212,7 +388,7 @@ export const TaskManager: React.FC<TaskManagerProps> = ({
                 tasksByTimeSlot[slot].map(task => (
                   <div
                     key={task.id}
-                    className={`flex items-center gap-3 p-3 rounded-lg border transition-all duration-200 ${
+                    className={`flex items-center gap-3 p-4 rounded-lg border transition-all duration-200 ${
                       task.completed
                         ? 'bg-green-900/20 border-green-800'
                         : 'bg-gray-700 border-gray-600 hover:shadow-md hover:border-gray-500'
@@ -234,20 +410,22 @@ export const TaskManager: React.FC<TaskManagerProps> = ({
                     </button>
 
                     <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className={`text-sm font-medium ${task.completed ? 'line-through text-gray-500' : 'text-white'}`}>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className={`text-base font-medium ${task.completed ? 'line-through text-gray-500' : 'text-white'}`}>
                           {task.title}
                         </span>
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(task.category)}`}>
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 ${getCategoryColor(task.category)}`}>
+                          {getCategoryIcon(task.category)}
                           {task.category}
                         </span>
-                        {task.category === 'DSA' && task.questionsCount && (
-                          <span className="bg-blue-800 text-blue-200 px-2 py-1 rounded-full text-xs font-medium border border-blue-600 flex items-center gap-1">
-                            <Hash className="w-3 h-3" />
-                            {task.questionsCount} Q
-                          </span>
-                        )}
                       </div>
+                      
+                      {getTaskDetails(task) && (
+                        <div className="text-sm text-gray-400 mb-1">
+                          {getTaskDetails(task)}
+                        </div>
+                      )}
+                      
                       <div className="flex items-center gap-2 text-xs text-gray-400">
                         <Star className="w-3 h-3" />
                         <span>{task.xp} XP</span>

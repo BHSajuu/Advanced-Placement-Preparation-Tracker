@@ -1,15 +1,25 @@
-import React from 'react';
-import { Calendar, Target, Flame, Trophy, RefreshCw, Hash } from 'lucide-react';
-import { UserProgress } from '../types';
+import React, { useState } from 'react';
+import { Calendar, Target, Flame, Trophy, RefreshCw, Hash, Settings } from 'lucide-react';
+import { UserProgress, UserGoals } from '../types';
 import { getRandomQuote } from '../utils/motivationalQuotes';
+import { GoalSetupDialog } from './GoalSetupDialog';
 
 interface DashboardProps {
   userProgress: UserProgress;
   startDate: Date;
+  userGoals?: UserGoals;
   onResetJourney: () => void;
+  onUpdateGoals: (goals: UserGoals) => void;
 }
 
-export const Dashboard: React.FC<DashboardProps> = ({ userProgress, startDate, onResetJourney }) => {
+export const Dashboard: React.FC<DashboardProps> = ({ 
+  userProgress, 
+  startDate, 
+  userGoals,
+  onResetJourney,
+  onUpdateGoals
+}) => {
+  const [showGoalDialog, setShowGoalDialog] = useState(false);
   const today = new Date();
   const daysPassed = Math.floor((today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
   const daysRemaining = Math.max(60 - daysPassed, 0);
@@ -22,6 +32,10 @@ export const Dashboard: React.FC<DashboardProps> = ({ userProgress, startDate, o
     if (window.confirm('Are you sure you want to start a new journey? This will clear all your progress and cannot be undone.')) {
       onResetJourney();
     }
+  };
+
+  const handleGoalSetup = () => {
+    setShowGoalDialog(true);
   };
 
   const stats = [
@@ -73,14 +87,43 @@ export const Dashboard: React.FC<DashboardProps> = ({ userProgress, startDate, o
           </p>
         </div>
         
-        <button
-          onClick={handleResetJourney}
-          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
-        >
-          <RefreshCw className="w-4 h-4" />
-          New Journey
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={handleGoalSetup}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+          >
+            <Settings className="w-4 h-4" />
+            {userGoals ? 'Update Goals' : 'Set Goals'}
+          </button>
+          <button
+            onClick={handleResetJourney}
+            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+          >
+            <RefreshCw className="w-4 h-4" />
+            New Journey
+          </button>
+        </div>
       </div>
+
+      {/* Goal Setup Prompt */}
+      {!userGoals && (
+        <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-6 text-white shadow-lg border-2 border-blue-400">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-bold mb-2">Welcome to Your MAANG Prep Journey!</h2>
+              <p className="text-blue-100">
+                Set your personalized 60-day goals to get started with smart progress tracking.
+              </p>
+            </div>
+            <button
+              onClick={handleGoalSetup}
+              className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors"
+            >
+              Get Started
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Countdown Timer */}
       <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-6 text-white shadow-lg">
@@ -163,6 +206,14 @@ export const Dashboard: React.FC<DashboardProps> = ({ userProgress, startDate, o
           </div>
         </div>
       )}
+
+      {/* Goal Setup Dialog */}
+      <GoalSetupDialog
+        isOpen={showGoalDialog}
+        onClose={() => setShowGoalDialog(false)}
+        onSave={onUpdateGoals}
+        existingGoals={userGoals}
+      />
     </div>
   );
 };

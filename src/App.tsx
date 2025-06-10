@@ -6,13 +6,14 @@ import { ProgressTracker } from './components/ProgressTracker';
 import { StrikeChart } from './components/StrikeChart';
 import { RewardPopup } from './components/RewardPopup';
 import { useLocalStorage } from './hooks/useLocalStorage';
-import { Task, UserProgress, Milestone, Achievement } from './types';
+import { Task, UserProgress, Milestone, Achievement, UserGoals } from './types';
 import { BarChart3, CheckSquare, Target, Activity } from 'lucide-react';
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [startDate, setStartDate] = useLocalStorage('prep-start-date', new Date().toISOString());
   const [tasks, setTasks] = useLocalStorage<Task[]>('prep-tasks', []);
+  const [userGoals, setUserGoals] = useLocalStorage<UserGoals | undefined>('prep-user-goals', undefined);
   const [currentAchievement, setCurrentAchievement] = useState<Achievement | null>(null);
 
   const [userProgress, setUserProgress] = useLocalStorage<UserProgress>('prep-progress', {
@@ -108,6 +109,31 @@ function App() {
     setTasks([...tasks, newTask]);
   };
 
+  const calculateSmartProgress = (task: Task, isCompleting: boolean) => {
+    if (!userGoals) return 0;
+
+    switch (task.category) {
+      case 'DSA':
+        return task.questionsCount || 1;
+      case 'Web Dev':
+        // Only count if it's a project completion
+        return task.projectName ? 1 : 0;
+      case 'System Design':
+        // Only count if it's a case study completion
+        return task.caseStudyName ? 1 : 0;
+      case 'Data Science':
+        return task.tutorialCount || 1;
+      case 'Mock Interview':
+      case 'English Speaking Practice':
+        return task.sessionCount || 1;
+      case 'CS Fundamentals':
+        // Only count if it's a chapter completion
+        return task.chapterName ? 1 : 0;
+      default:
+        return 1;
+    }
+  };
+
   const checkDailyMilestones = (todayTasks: Task[], newProgress: UserProgress) => {
     const today = new Date().toISOString().split('T')[0];
     const todayCompletedTasks = todayTasks.filter(task =>
@@ -200,11 +226,12 @@ function App() {
         newProgress.dsaQuestionsHistory[today] = (newProgress.dsaQuestionsHistory[today] || 0) + task.questionsCount;
       }
 
-      // Update milestones
+      // Update milestones with smart progress calculation
+      const smartProgressIncrement = calculateSmartProgress(task, true);
       const relatedMilestones = milestones.filter(m => m.category === task.category);
       relatedMilestones.forEach(milestone => {
         if (!milestone.completed && milestone.current < milestone.target) {
-          milestone.current += 1;
+          milestone.current += smartProgressIncrement;
           if (milestone.current >= milestone.target) {
             milestone.completed = true;
             newProgress.totalXP += milestone.xp;
@@ -264,6 +291,17 @@ function App() {
       if (task.category === 'DSA' && task.questionsCount) {
         newProgress.dsaQuestionsHistory[today] = Math.max(0, (newProgress.dsaQuestionsHistory[today] || 0) - task.questionsCount);
       }
+
+      // Reverse milestone progress
+      const smartProgressDecrement = calculateSmartProgress(task, false);
+      const relatedMilestones = milestones.filter(m => m.category === task.category);
+      relatedMilestones.forEach(milestone => {
+        milestone.current = Math.max(0, milestone.current - smartProgressDecrement);
+        if (milestone.completed && milestone.current < milestone.target) {
+          milestone.completed = false;
+          newProgress.totalXP = Math.max(0, newProgress.totalXP - milestone.xp);
+        }
+      });
     }
 
     setUserProgress(newProgress);
@@ -274,16 +312,22 @@ function App() {
     setTasks(tasks.filter(t => t.id !== taskId));
   };
 
+  const updateGoals = (goals: UserGoals) => {
+    setUserGoals(goals);
+  };
+
   const resetJourney = () => {
     // Clear all localStorage data
     localStorage.removeItem('prep-start-date');
     localStorage.removeItem('prep-tasks');
     localStorage.removeItem('prep-progress');
     localStorage.removeItem('prep-milestones');
+    localStorage.removeItem('prep-user-goals');
 
     // Reset all state to initial values
     setStartDate(new Date().toISOString());
     setTasks([]);
+    setUserGoals(undefined);
     setUserProgress({
       totalXP: 0,
       level: 1,
@@ -405,13 +449,16 @@ function App() {
             <Dashboard
               userProgress={userProgress}
               startDate={new Date(startDate)}
+              userGoals={userGoals}
               onResetJourney={resetJourney}
+              onUpdateGoals={updateGoals}
             />
           )}
 
           {activeTab === 'tasks' && (
             <TaskManager
               tasks={tasks}
+              userGoals={userGoals}
               onAddTask={addTask}
               onToggleTask={toggleTask}
               onDeleteTask={deleteTask}
@@ -422,6 +469,8 @@ function App() {
             <ProgressTracker
               userProgress={userProgress}
               milestones={milestones}
+              userGoals={userGoals}
+              tasks={tasks}
             />
           )}
 
