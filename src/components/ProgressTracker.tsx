@@ -10,8 +10,7 @@ interface ProgressTrackerProps {
 }
 
 export const ProgressTracker: React.FC<ProgressTrackerProps> = ({ 
-  userProgress, 
-  milestones, 
+  userProgress,
   userGoals,
   tasks 
 }) => {
@@ -260,50 +259,6 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
                     </div>
                   </div>
                 )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-  
-      
-
-      {/* Traditional Milestone Progress */}
-      {milestones.length > 0 && (
-        <div className="space-y-4">
-          <h3 className="text-xl font-semibold text-white flex items-center gap-2">
-            <Trophy className="w-5 h-5" />
-            Milestone Progress
-          </h3>
-          
-          <div className="grid gap-4">
-            {milestones.map((milestone) => (
-              <div key={milestone.id} className="bg-gray-800 rounded-xl p-6 shadow-lg border-l-4 border-blue-400">
-                <div className="flex items-center justify-between mb-2">
-                  <h5 className="font-medium text-white">{milestone.title}</h5>
-                  <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                    milestone.completed 
-                      ? 'bg-green-800 text-green-100'
-                      : 'bg-gray-700 text-gray-300'
-                  }`}>
-                    {milestone.current}/{milestone.target}
-                  </span>
-                </div>
-                
-                <p className="text-sm text-gray-400 mb-2">{milestone.description}</p>
-                
-                <div className="bg-gray-700 rounded-full h-2 mb-2">
-                  <div 
-                    className={`bg-gradient-to-r ${categoryColors[milestone.category]} rounded-full h-full transition-all duration-500`}
-                    style={{ width: `${Math.min((milestone.current / milestone.target) * 100, 100)}%` }}
-                  />
-                </div>
-                
-                <div className="flex justify-between items-center text-xs text-gray-400">
-                  <span>{Math.round((milestone.current / milestone.target) * 100)}% Complete</span>
-                  <span>{milestone.xp} XP</span>
-                </div>
               </div>
             ))}
           </div>
