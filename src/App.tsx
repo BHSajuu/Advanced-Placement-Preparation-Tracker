@@ -6,7 +6,7 @@ import { ProgressTracker } from './components/ProgressTracker';
 import { StrikeChart } from './components/StrikeChart';
 import { RewardPopup } from './components/RewardPopup';
 import { useLocalStorage } from './hooks/useLocalStorage';
-import { Task, UserProgress, Milestone, Achievement} from './types';
+import { Task, UserProgress, Milestone, Achievement } from './types';
 import { BarChart3, CheckSquare, Target, Activity } from 'lucide-react';
 
 function App() {
@@ -14,7 +14,7 @@ function App() {
   const [startDate, setStartDate] = useLocalStorage('prep-start-date', new Date().toISOString());
   const [tasks, setTasks] = useLocalStorage<Task[]>('prep-tasks', []);
   const [currentAchievement, setCurrentAchievement] = useState<Achievement | null>(null);
-  
+
   const [userProgress, setUserProgress] = useLocalStorage<UserProgress>('prep-progress', {
     totalXP: 0,
     level: 1,
@@ -69,6 +69,26 @@ function App() {
     },
     {
       id: uuidv4(),
+      title: 'Data Science Basics',
+      description: 'Finish 100 data science tutorials',
+      category: 'Data Science',
+      target: 100,
+      current: 0,
+      xp: 700,
+      completed: false
+    },
+    {
+      id: uuidv4(),
+      title: 'CS Fundamentals Core',
+      description: 'Master 15 CS fundamentals topics',
+      category: 'CS Fundamentals',
+      target: 15,
+      current: 0,
+      xp: 700,
+      completed: false
+    },
+    {
+      id: uuidv4(),
       title: 'English Speaking Fluency',
       description: 'Complete 30 English speaking practice sessions',
       category: 'English Speaking Practice',
@@ -90,9 +110,9 @@ function App() {
 
   const checkDailyMilestones = (todayTasks: Task[], newProgress: UserProgress) => {
     const today = new Date().toISOString().split('T')[0];
-    const todayCompletedTasks = todayTasks.filter(task => 
-      task.completed && 
-      task.completedAt && 
+    const todayCompletedTasks = todayTasks.filter(task =>
+      task.completed &&
+      task.completedAt &&
       task.completedAt.toISOString().split('T')[0] === today
     );
 
@@ -152,8 +172,8 @@ function App() {
     if (taskIndex === -1) return;
 
     const task = tasks[taskIndex];
-    const updatedTask = { 
-      ...task, 
+    const updatedTask = {
+      ...task,
       completed: !task.completed,
       completedAt: !task.completed ? new Date() : undefined
     };
@@ -171,15 +191,15 @@ function App() {
       newProgress.totalXP += task.xp;
       newProgress.completedTasks += 1;
       newProgress.level = Math.floor(newProgress.totalXP / 1000) + 1;
-      
+
       // Update daily history
       newProgress.dailyHistory[today] = (newProgress.dailyHistory[today] || 0) + 1;
-      
+
       // Update DSA questions history if it's a DSA task
       if (task.category === 'DSA' && task.questionsCount) {
         newProgress.dsaQuestionsHistory[today] = (newProgress.dsaQuestionsHistory[today] || 0) + task.questionsCount;
       }
-      
+
       // Update milestones
       const relatedMilestones = milestones.filter(m => m.category === task.category);
       relatedMilestones.forEach(milestone => {
@@ -188,7 +208,7 @@ function App() {
           if (milestone.current >= milestone.target) {
             milestone.completed = true;
             newProgress.totalXP += milestone.xp;
-            
+
             // Create achievement
             const achievement: Achievement = {
               id: uuidv4(),
@@ -203,16 +223,16 @@ function App() {
           }
         }
       });
-      
+
       // Update streak
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
       const yesterdayStr = yesterday.toISOString().split('T')[0];
-      
+
       if (newProgress.dailyHistory[yesterdayStr] || newProgress.currentStreak === 0) {
         newProgress.currentStreak += 1;
         newProgress.longestStreak = Math.max(newProgress.longestStreak, newProgress.currentStreak);
-        
+
         // Streak achievements
         if (newProgress.currentStreak === 7) {
           const achievement: Achievement = {
@@ -230,16 +250,16 @@ function App() {
 
       // Check daily milestones
       checkDailyMilestones(updatedTasks, newProgress);
-      
+
     } else {
       // Task uncompleted
       newProgress.totalXP = Math.max(0, newProgress.totalXP - task.xp);
       newProgress.completedTasks = Math.max(0, newProgress.completedTasks - 1);
       newProgress.level = Math.floor(newProgress.totalXP / 1000) + 1;
-      
+
       // Update daily history
       newProgress.dailyHistory[today] = Math.max(0, (newProgress.dailyHistory[today] || 0) - 1);
-      
+
       // Update DSA questions history if it's a DSA task
       if (task.category === 'DSA' && task.questionsCount) {
         newProgress.dsaQuestionsHistory[today] = Math.max(0, (newProgress.dsaQuestionsHistory[today] || 0) - task.questionsCount);
@@ -260,7 +280,7 @@ function App() {
     localStorage.removeItem('prep-tasks');
     localStorage.removeItem('prep-progress');
     localStorage.removeItem('prep-milestones');
-    
+
     // Reset all state to initial values
     setStartDate(new Date().toISOString());
     setTasks([]);
@@ -278,9 +298,9 @@ function App() {
       {
         id: uuidv4(),
         title: 'DSA Foundation',
-        description: 'Complete 50 DSA problems',
+        description: 'Complete 400 DSA problems',
         category: 'DSA',
-        target: 50,
+        target: 400,
         current: 0,
         xp: 500,
         completed: false
@@ -290,7 +310,7 @@ function App() {
         title: 'Web Development Project',
         description: 'Build and deploy a full-stack application',
         category: 'Web Dev',
-        target: 1,
+        target: 5,
         current: 0,
         xp: 1000,
         completed: false
@@ -313,6 +333,26 @@ function App() {
         target: 20,
         current: 0,
         xp: 600,
+        completed: false
+      },
+      {
+        id: uuidv4(),
+        title: 'Data Science Basics',
+        description: 'Finish 100 data science tutorials',
+        category: 'Data Science',
+        target: 100,
+        current: 0,
+        xp: 700,
+        completed: false
+      },
+      {
+        id: uuidv4(),
+        title: 'CS Fundamentals Core',
+        description: 'Master 15 CS fundamentals topics',
+        category: 'CS Fundamentals',
+        target: 15,
+        current: 0,
+        xp: 700,
         completed: false
       },
       {
@@ -344,14 +384,13 @@ function App() {
         <div className="bg-gray-800 rounded-xl shadow-lg mb-8 p-1">
           <nav className="flex flex-nowrap overflow-x-auto md:overflow-hidden space-x-4 lg:space-x-16 px-2 no-scrollbar">
             {tabs.map(tab => (
-              <button 
+              <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all duration-200 ${
-                  activeTab === tab.id
-                    ? 'bg-blue-500 text-white shadow-md'
-                    : 'text-gray-400 hover:text-blue-400 hover:bg-gray-700'
-                }`}
+                className={`flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all duration-200 ${activeTab === tab.id
+                  ? 'bg-blue-500 text-white shadow-md'
+                  : 'text-gray-400 hover:text-blue-400 hover:bg-gray-700'
+                  }`}
               >
                 {tab.icon}
                 {tab.label}
@@ -363,13 +402,13 @@ function App() {
         {/* Content */}
         <div className="transition-all duration-300">
           {activeTab === 'dashboard' && (
-            <Dashboard 
-              userProgress={userProgress} 
-              startDate={new Date(startDate)} 
+            <Dashboard
+              userProgress={userProgress}
+              startDate={new Date(startDate)}
               onResetJourney={resetJourney}
             />
           )}
-          
+
           {activeTab === 'tasks' && (
             <TaskManager
               tasks={tasks}
@@ -378,14 +417,14 @@ function App() {
               onDeleteTask={deleteTask}
             />
           )}
-          
+
           {activeTab === 'progress' && (
             <ProgressTracker
               userProgress={userProgress}
               milestones={milestones}
             />
           )}
-          
+
           {activeTab === 'activity' && (
             <StrikeChart userProgress={userProgress} />
           )}
