@@ -6,7 +6,7 @@ import { ProgressTracker } from './components/ProgressTracker';
 import { StrikeChart } from './components/StrikeChart';
 import { RewardPopup } from './components/RewardPopup';
 import { useLocalStorage } from './hooks/useLocalStorage';
-import { Task, UserProgress, Milestone, Achievement, TaskCategory } from './types';
+import { Task, UserProgress, Milestone, Achievement} from './types';
 import { BarChart3, CheckSquare, Target, Activity } from 'lucide-react';
 
 function App() {
@@ -342,9 +342,9 @@ function App() {
       <div className="container mx-auto px-4 py-8">
         {/* Navigation */}
         <div className="bg-gray-800 rounded-xl shadow-lg mb-8 p-1">
-          <nav className="flex space-x-1">
+          <nav className="flex flex-nowrap overflow-x-auto md:overflow-hidden space-x-1 lg:space-x-16 px-2 no-scrollbar">
             {tabs.map(tab => (
-              <button
+              <button 
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all duration-200 ${
