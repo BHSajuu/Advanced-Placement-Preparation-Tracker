@@ -108,7 +108,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
       {/* Goal Setup Prompt */}
       {!userGoals && (
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-6 text-white shadow-lg border-2 border-blue-400">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col lg:flex-row gap-2 lg:gap-0 items-center justify-between">
             <div>
               <h2 className="text-xl font-bold mb-2">Welcome to Your MAANG Prep Journey!</h2>
               <p className="text-blue-100">
