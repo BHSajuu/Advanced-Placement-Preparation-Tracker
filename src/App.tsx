@@ -342,7 +342,7 @@ function App() {
       <div className="container mx-auto px-4 py-8">
         {/* Navigation */}
         <div className="bg-gray-800 rounded-xl shadow-lg mb-8 p-1">
-          <nav className="flex flex-nowrap overflow-x-auto md:overflow-hidden space-x-1 lg:space-x-16 px-2 no-scrollbar">
+          <nav className="flex flex-nowrap overflow-x-auto md:overflow-hidden space-x-4 lg:space-x-16 px-2 no-scrollbar">
             {tabs.map(tab => (
               <button 
                 key={tab.id}

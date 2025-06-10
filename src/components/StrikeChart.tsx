@@ -109,7 +109,7 @@ export const StrikeChart: React.FC<StrikeChartProps> = ({ userProgress }) => {
       </div>
 
       {/* Calendar grid */}
-      <div className="grid grid-cols-7 gap-1 mb-4 ml-28 ">
+      <div className="grid grid-cols-7 gap-1 mb-4 ml-5 lg:ml-28 ">
         {dayLabels.map((day) => (
           <div key={day} className="text-xs text-gray-400 font-medium py-1">
             {day}
