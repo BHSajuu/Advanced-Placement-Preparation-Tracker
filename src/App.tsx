@@ -30,9 +30,9 @@ function App() {
     {
       id: uuidv4(),
       title: 'DSA Foundation',
-      description: 'Complete 50 DSA problems',
+      description: 'Complete 400 DSA problems',
       category: 'DSA',
-      target: 50,
+      target: 400,
       current: 0,
       xp: 500,
       completed: false
@@ -42,7 +42,7 @@ function App() {
       title: 'Web Development Project',
       description: 'Build and deploy a full-stack application',
       category: 'Web Dev',
-      target: 1,
+      target: 5,
       current: 0,
       xp: 1000,
       completed: false
