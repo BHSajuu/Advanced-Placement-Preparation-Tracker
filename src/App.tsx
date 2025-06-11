@@ -24,7 +24,8 @@ function App() {
     completedTasks: 0,
     achievements: [],
     dailyHistory: {},
-    dsaQuestionsHistory: {}
+    dsaQuestionsHistory: {},
+    dsaTopicsProgress: {}
   });
 
   const [milestones, setMilestones] = useLocalStorage<Milestone[]>('prep-milestones', [
@@ -134,6 +135,55 @@ function App() {
     }
   };
 
+  const updateDSATopicProgress = (task: Task, isCompleting: boolean) => {
+    if (task.category !== 'DSA' || !task.dsaTopicName || !userGoals?.dsaTopics) return;
+
+    const newProgress = { ...userProgress };
+    const topicName = task.dsaTopicName;
+    const questionsCount = task.questionsCount || 1;
+
+    if (!newProgress.dsaTopicsProgress[topicName]) {
+      const topic = userGoals.dsaTopics.find(t => t.name === topicName);
+      newProgress.dsaTopicsProgress[topicName] = {
+        questionsCompleted: 0,
+        totalQuestions: topic?.targetQuestions || 0,
+        completed: false
+      };
+    }
+
+    const topicProgress = newProgress.dsaTopicsProgress[topicName];
+
+    if (isCompleting) {
+      topicProgress.questionsCompleted += questionsCount;
+      
+      // Check if topic is completed for the first time
+      if (!topicProgress.completed && topicProgress.questionsCompleted >= topicProgress.totalQuestions) {
+        topicProgress.completed = true;
+        
+        // Award topic completion achievement
+        const achievement: Achievement = {
+          id: uuidv4(),
+          title: `${topicName} Mastered!`,
+          description: `Completed all questions in ${topicName}`,
+          type: 'topic',
+          icon: 'trophy',
+          unlockedAt: new Date()
+        };
+        newProgress.achievements.push(achievement);
+        newProgress.totalXP += 150; // Bonus XP for topic completion
+        setCurrentAchievement(achievement);
+      }
+    } else {
+      topicProgress.questionsCompleted = Math.max(0, topicProgress.questionsCompleted - questionsCount);
+      if (topicProgress.completed && topicProgress.questionsCompleted < topicProgress.totalQuestions) {
+        topicProgress.completed = false;
+        newProgress.totalXP = Math.max(0, newProgress.totalXP - 150); // Remove bonus XP
+      }
+    }
+
+    setUserProgress(newProgress);
+  };
+
   const checkDailyMilestones = (todayTasks: Task[], newProgress: UserProgress) => {
     const today = new Date().toISOString().split('T')[0];
     const todayCompletedTasks = todayTasks.filter(task =>
@@ -226,6 +276,9 @@ function App() {
         newProgress.dsaQuestionsHistory[today] = (newProgress.dsaQuestionsHistory[today] || 0) + task.questionsCount;
       }
 
+      // Update DSA topic progress
+      updateDSATopicProgress(task, true);
+
       // Update milestones with smart progress calculation
       const smartProgressIncrement = calculateSmartProgress(task, true);
       const relatedMilestones = milestones.filter(m => m.category === task.category);
@@ -292,6 +345,9 @@ function App() {
         newProgress.dsaQuestionsHistory[today] = Math.max(0, (newProgress.dsaQuestionsHistory[today] || 0) - task.questionsCount);
       }
 
+      // Update DSA topic progress
+      updateDSATopicProgress(task, false);
+
       // Reverse milestone progress
       const smartProgressDecrement = calculateSmartProgress(task, false);
       const relatedMilestones = milestones.filter(m => m.category === task.category);
@@ -336,7 +392,8 @@ function App() {
       completedTasks: 0,
       achievements: [],
       dailyHistory: {},
-      dsaQuestionsHistory: {}
+      dsaQuestionsHistory: {},
+      dsaTopicsProgress: {}
     });
     setMilestones([
       {

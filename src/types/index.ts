@@ -19,6 +19,7 @@ export interface Task {
   createdAt: Date;
   completedAt?: Date;
   questionsCount?: number;
+  dsaTopicName?: string;
   projectName?: string;
   caseStudyName?: string;
   tutorialCount?: number;
@@ -35,13 +36,14 @@ export interface UserProgress {
   achievements: Achievement[];
   dailyHistory: Record<string, number>;
   dsaQuestionsHistory: Record<string, number>;
+  dsaTopicsProgress: Record<string, { questionsCompleted: number; totalQuestions: number; completed: boolean }>;
 }
 
 export interface Achievement {
   id: string;
   title: string;
   description: string;
-  type: 'daily' | 'milestone' | 'streak';
+  type: 'daily' | 'milestone' | 'streak' | 'topic';
   icon: string;
   unlockedAt: Date;
 }
@@ -57,8 +59,14 @@ export interface Milestone {
   completed: boolean;
 }
 
+export interface DSATopic {
+  name: string;
+  targetQuestions: number;
+}
+
 export interface UserGoals {
   dsaQuestions: number;
+  dsaTopics: DSATopic[];
   webDevProjects: string[];
   systemDesignCases: string[];
   mockInterviews: number;

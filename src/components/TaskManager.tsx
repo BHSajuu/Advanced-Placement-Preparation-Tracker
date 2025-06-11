@@ -24,6 +24,7 @@ export const TaskManager: React.FC<TaskManagerProps> = ({
     timeSlot: 'Morning' as TimeSlot,
     xp: 50,
     questionsCount: 1,
+    dsaTopicName: '',
     projectName: '',
     caseStudyName: '',
     tutorialCount: 1,
@@ -63,6 +64,7 @@ export const TaskManager: React.FC<TaskManagerProps> = ({
     switch (newTask.category) {
       case 'DSA':
         taskToAdd.questionsCount = newTask.questionsCount;
+        if (newTask.dsaTopicName) taskToAdd.dsaTopicName = newTask.dsaTopicName;
         break;
       case 'Web Dev':
         if (newTask.projectName) taskToAdd.projectName = newTask.projectName;
@@ -92,6 +94,7 @@ export const TaskManager: React.FC<TaskManagerProps> = ({
       timeSlot: 'Morning',
       xp: 50,
       questionsCount: 1,
+      dsaTopicName: '',
       projectName: '',
       caseStudyName: '',
       tutorialCount: 1,
@@ -123,20 +126,37 @@ export const TaskManager: React.FC<TaskManagerProps> = ({
     switch (newTask.category) {
       case 'DSA':
         return (
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              Questions Count
-            </label>
-            <input
-              type="number"
-              min="1"
-              max="50"
-              value={newTask.questionsCount}
-              onChange={(e) => setNewTask({ ...newTask, questionsCount: parseInt(e.target.value) || 1 })}
-              className="w-full px-3 py-2 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-700 text-white"
-              placeholder="Number of questions"
-            />
-          </div>
+          <>
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Questions Count
+              </label>
+              <input
+                type="number"
+                min="1"
+                max="50"
+                value={newTask.questionsCount}
+                onChange={(e) => setNewTask({ ...newTask, questionsCount: parseInt(e.target.value) || 1 })}
+                className="w-full px-3 py-2 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-700 text-white"
+                placeholder="Number of questions"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                DSA Topic
+              </label>
+              <select
+                value={newTask.dsaTopicName}
+                onChange={(e) => setNewTask({ ...newTask, dsaTopicName: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-700 text-white"
+              >
+                <option value="">Select DSA topic</option>
+                {userGoals?.dsaTopics.map((topic, index) => (
+                  <option key={index} value={topic.name}>{topic.name}</option>
+                ))}
+              </select>
+            </div>
+          </>
         );
 
       case 'Web Dev':
@@ -243,6 +263,9 @@ export const TaskManager: React.FC<TaskManagerProps> = ({
     
     if (task.questionsCount) {
       details.push(`${task.questionsCount} questions`);
+    }
+    if (task.dsaTopicName) {
+      details.push(`Topic: ${task.dsaTopicName}`);
     }
     if (task.projectName) {
       details.push(`Project: ${task.projectName}`);
