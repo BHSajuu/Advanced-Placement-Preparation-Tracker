@@ -21,7 +21,16 @@ export const Dashboard: React.FC<DashboardProps> = ({
 }) => {
   const [showGoalDialog, setShowGoalDialog] = useState(false);
   const today = new Date();
-  const daysPassed = Math.floor((today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+
+  // Normalize dates to local midnight to count calendar days
+  const toLocalMidnight = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  const startMidnight = toLocalMidnight(startDate);
+  const todayMidnight = toLocalMidnight(today);
+
+  const daysPassed = Math.floor(
+    (todayMidnight.getTime() - startMidnight.getTime())
+    / (1000 * 60 * 60 * 24)
+  ) + 1;
   const daysRemaining = Math.max(60 - daysPassed, 0);
   
   const todayStr = today.toISOString().split('T')[0];
@@ -214,6 +223,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
         onSave={onUpdateGoals}
         existingGoals={userGoals}
       />
-    </div>
+    </div>  
   );
 };
