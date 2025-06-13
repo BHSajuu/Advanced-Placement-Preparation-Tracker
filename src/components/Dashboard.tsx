@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Calendar, Target, Flame, Trophy, RefreshCw, Hash, Settings } from 'lucide-react';
 import { UserProgress, UserGoals } from '../types';
 import { getRandomQuote } from '../utils/motivationalQuotes';
@@ -12,9 +12,9 @@ interface DashboardProps {
   onUpdateGoals: (goals: UserGoals) => void;
 }
 
-export const Dashboard: React.FC<DashboardProps> = ({ 
-  userProgress, 
-  startDate, 
+export const Dashboard: React.FC<DashboardProps> = ({
+  userProgress,
+  startDate,
   userGoals,
   onResetJourney,
   onUpdateGoals
@@ -32,7 +32,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
     / (1000 * 60 * 60 * 24)
   ) + 1;
   const daysRemaining = Math.max(60 - daysPassed, 0);
-  
+
   const todayStr = today.toISOString().split('T')[0];
   const todayTasks = userProgress.dailyHistory[todayStr] || 0;
   const todayDSAQuestions = userProgress.dsaQuestionsHistory[todayStr] || 0;
@@ -78,6 +78,49 @@ export const Dashboard: React.FC<DashboardProps> = ({
     }
   ];
 
+
+  // Define color palettes for achievements
+  const achievementPalettes = [
+    { bg: 'from-green-500 to-teal-500', text: 'text-white' },
+    { bg: 'from-blue-500 to-purple-500', text: 'text-white' },
+    { bg: 'from-yellow-500 to-orange-700', text: 'text-gray-900' },
+    { bg: 'from-pink-500 to-red-500', text: 'text-white' },
+    { bg: 'from-indigo-500 to-blue-500', text: 'text-white' },
+    { bg: 'from-gray-500 to-gray-700', text: 'text-white' }
+  ];
+
+  const getAchievementStyle = (title: string) => {
+    // Simple hash based on title to pick a palette
+    let hash = 0;
+    for (let i = 0; i < title.length; i++) {
+      hash = title.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const idx = Math.abs(hash) % achievementPalettes.length;
+    return achievementPalettes[idx];
+  };
+
+  // Inject CSS for marquee scroll
+  useEffect(() => {
+    if (userProgress.achievements.length > 0) {
+      const style = document.createElement('style');
+      const duration = userProgress.achievements.length * 5; // 5s per item
+      style.innerHTML = `
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .achievement-marquee {
+          animation: marquee ${duration}s linear infinite;
+        }
+      `;
+      document.head.appendChild(style);
+      return () => {
+        document.head.removeChild(style);
+      };
+    }
+  }, [userProgress.achievements.length]);
+
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -87,15 +130,15 @@ export const Dashboard: React.FC<DashboardProps> = ({
             MAANG Placement Prep
           </h1>
           <p className="text-gray-400 mt-1">
-            {today.toLocaleDateString('en-US', { 
-              weekday: 'long', 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric' 
+            {today.toLocaleDateString('en-US', {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
             })}
           </p>
         </div>
-        
+
         <div className="flex gap-3">
           <button
             onClick={handleGoalSetup}
@@ -152,9 +195,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
             </div>
           </div>
         </div>
-        
+
         <div className="mt-4 bg-white/20 rounded-full h-2">
-          <div 
+          <div
             className="bg-white rounded-full h-full transition-all duration-500"
             style={{ width: `${Math.min((daysPassed / 60) * 100, 100)}%` }}
           />
@@ -195,23 +238,41 @@ export const Dashboard: React.FC<DashboardProps> = ({
         ))}
       </div>
 
-      {/* Achievement Showcase */}
+   {/* Achievement Showcase */}
       {userProgress.achievements.length > 0 && (
         <div className="bg-gray-800 rounded-xl p-6 shadow-lg">
           <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
             <Trophy className="w-5 h-5 text-yellow-500" />
             Recent Achievements
           </h3>
-          <div className="flex gap-3 overflow-x-auto pb-2">
-            {userProgress.achievements.slice(-5).map((achievement) => (
-              <div
-                key={achievement.id}
-                className="m-5 flex-shrink-0 bg-gradient-to-r from-yellow-500 to-orange-700 text-white p-3 rounded-lg min-w-[200px] hover:scale-105 transition-transform duration-200"
-              >
-                <div className="font-semibold text-sm">{achievement.title}</div>
-                <div className="text-xs text-yellow-100 mt-1">{achievement.description}</div>
-              </div>
-            ))}
+          <div className="overflow-hidden">
+            <div className="flex space-x-4 achievement-marquee">
+              {userProgress.achievements.map((achievement) => {
+                const style = getAchievementStyle(achievement.title);
+                return (
+                  <div
+                    key={achievement.id}
+                    className={`m-5 hover:cursor-no-drop hover:scale-105 transition-transform ease-linear flex-shrink-0 bg-gradient-to-r ${style.bg} ${style.text} p-3 rounded-lg min-w-[120px]`}
+                  >
+                    <div className="font-semibold text-sm text-center">{achievement.title}</div>
+                    <div className="text-xs mt-1 text-center">{achievement.description}</div>
+                  </div>
+                );
+              })}
+              {/* duplicate for seamless loop */}
+              {userProgress.achievements.map((achievement) => {
+                const style = getAchievementStyle(achievement.title);
+                return (
+                  <div
+                    key={`${achievement.id}-dup`}
+                    className={`flex-shrink-0 bg-gradient-to-r ${style.bg} ${style.text} p-3 rounded-lg min-w-[120px]`}
+                  >
+                    <div className="font-semibold text-sm text-center">{achievement.title}</div>
+                    <div className="text-xs mt-1 text-center">{achievement.description}</div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       )}
@@ -223,6 +284,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
         onSave={onUpdateGoals}
         existingGoals={userGoals}
       />
-    </div>  
+    </div>
   );
 };
