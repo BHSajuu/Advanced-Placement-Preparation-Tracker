@@ -150,6 +150,12 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
   const dsaTopicProgress = calculateDSATopicProgress();
   const totalDSAQuestions = Object.values(userProgress.dsaQuestionsHistory).reduce((sum, count) => sum + count, 0);
 
+    // Calculate additional DSA statistics
+  const dsaQuestionsArray = Object.values(userProgress.dsaQuestionsHistory);
+  const activeDSADays = dsaQuestionsArray.filter(count => count > 0).length;
+  const avgQuestionsPerDay = activeDSADays > 0 ? (totalDSAQuestions / activeDSADays).toFixed(1) : '0';
+  const maxQuestionsInDay = Math.max(...dsaQuestionsArray, 0);
+  
   return (
     <div className="space-y-6">
       {/* Level and XP Progress */}
@@ -184,7 +190,7 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
       </div>
 
 
-      {/* DSA Questions Summary */}
+        {/* DSA Questions Summary */}
       <div className="bg-gray-800 rounded-xl p-6 shadow-lg border-l-4 border-blue-500">
         <div className="flex items-center gap-3 mb-4">
           <div className="bg-gradient-to-r from-blue-500 to-blue-600 p-2 rounded-lg text-white">
@@ -195,8 +201,8 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
             <p className="text-gray-400">Total questions solved: {totalDSAQuestions}</p>
           </div>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           <div className="bg-gray-700 rounded-lg p-4">
             <div className="text-2xl font-bold text-blue-400">{totalDSAQuestions}</div>
             <div className="text-sm text-gray-400">Total Questions</div>
@@ -209,9 +215,21 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
           </div>
           <div className="bg-gray-700 rounded-lg p-4">
             <div className="text-2xl font-bold text-yellow-400">
-              {Object.values(userProgress.dsaQuestionsHistory).filter(count => count > 0).length}
+              {activeDSADays}
             </div>
             <div className="text-sm text-gray-400">Active Days</div>
+          </div>
+          <div className="bg-gray-700 rounded-lg p-4">
+            <div className="text-2xl font-bold text-purple-400">
+              {avgQuestionsPerDay}
+            </div>
+            <div className="text-sm text-gray-400">Avg Questions/Day</div>
+          </div>
+          <div className="bg-gray-700 rounded-lg p-4">
+            <div className="text-2xl font-bold text-red-400">
+              {maxQuestionsInDay}
+            </div>
+            <div className="text-sm text-gray-400">Max Questions/Day</div>
           </div>
         </div>
       </div>
