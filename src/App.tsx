@@ -155,11 +155,11 @@ function App() {
 
     if (isCompleting) {
       topicProgress.questionsCompleted += questionsCount;
-      
+
       // Check if topic is completed for the first time
       if (!topicProgress.completed && topicProgress.questionsCompleted >= topicProgress.totalQuestions) {
         topicProgress.completed = true;
-        
+
         // Award topic completion achievement
         const achievement: Achievement = {
           id: uuidv4(),
@@ -241,6 +241,26 @@ function App() {
       newProgress.totalXP += 200;
       setCurrentAchievement(achievement);
     }
+
+    // New: Daily Task Master achievement
+    const assignedTodayTasks = todayTasks.filter(task =>
+      task.createdAt &&
+      task.createdAt.toISOString().split('T')[0] === today
+    );
+    if (assignedTodayTasks.length > 5 && totalTodayTasks === assignedTodayTasks.length && !newProgress.achievements.some(a => a.title === 'Daily Task Master' && a.unlockedAt.toISOString().split('T')[0] === today)) {
+      const achievement: Achievement = {
+        id: uuidv4(),
+        title: 'Daily Task Master',
+        description: 'Completed all tasks assigned for the day!',
+        type: 'daily',
+        icon: 'trophy',
+        unlockedAt: new Date()
+      };
+      newProgress.achievements.push(achievement);
+      newProgress.totalXP += 150;
+      setCurrentAchievement(achievement);
+    }
+
   };
 
   const toggleTask = (taskId: string) => {
