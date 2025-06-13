@@ -206,7 +206,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             {userProgress.achievements.slice(-5).map((achievement) => (
               <div
                 key={achievement.id}
-                className="flex-shrink-0 bg-gradient-to-r from-yellow-400 to-orange-500 text-white p-3 rounded-lg min-w-[200px]"
+                className="m-5 flex-shrink-0 bg-gradient-to-r from-yellow-500 to-orange-700 text-white p-3 rounded-lg min-w-[200px] hover:scale-105 transition-transform duration-200"
               >
                 <div className="font-semibold text-sm">{achievement.title}</div>
                 <div className="text-xs text-yellow-100 mt-1">{achievement.description}</div>

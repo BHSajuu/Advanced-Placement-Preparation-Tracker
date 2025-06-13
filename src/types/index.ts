@@ -43,7 +43,7 @@ export interface Achievement {
   id: string;
   title: string;
   description: string;
-  type: 'daily' | 'milestone' | 'streak' | 'topic';
+  type: 'daily' | 'milestone' | 'streak' | 'topic' | 'xp';
   icon: string;
   unlockedAt: Date;
 }

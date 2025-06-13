@@ -54,7 +54,7 @@ export const RewardPopup: React.FC<RewardPopupProps> = ({ achievement, onClose }
           </p>
           
           <div className="animate-pulse">
-            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-4 py-2 rounded-full font-semibold">
+            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-yellow-300 to-orange-500 text-white px-4 py-2 rounded-full font-semibold ">
               <Trophy className="w-4 h-4" />
               New Badge Earned!
             </div>
