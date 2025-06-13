@@ -304,15 +304,20 @@ function App() {
         }
       });
 
-      // Update streak
+      // Update streak: only on first completion of the day
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
       const yesterdayStr = yesterday.toISOString().split('T')[0];
-
-      if (newProgress.dailyHistory[yesterdayStr] || newProgress.currentStreak === 0) {
-        newProgress.currentStreak += 1;
+      // prev count before this completion
+      const prevTodayCount = (newProgress.dailyHistory[today] || 1) - 1;
+      if (prevTodayCount === 0) {
+        const yesterdayCount = newProgress.dailyHistory[yesterdayStr] || 0;
+        if (yesterdayCount > 0) {
+          newProgress.currentStreak += 1;
+        } else {
+          newProgress.currentStreak = 1;
+        }
         newProgress.longestStreak = Math.max(newProgress.longestStreak, newProgress.currentStreak);
-
         // Streak achievements
         if (newProgress.currentStreak === 7) {
           const achievement: Achievement = {
