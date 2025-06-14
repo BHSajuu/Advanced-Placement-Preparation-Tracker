@@ -110,6 +110,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
           100% { transform: translateX(-50%); }
         }
         .achievement-marquee {
+          overflow: hidden;
+        }
+        .achievement-track {
+          display: inline-flex;
+          gap: 1rem;
           animation: marquee ${duration}s linear infinite;
         }
       `;
@@ -119,7 +124,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
       };
     }
   }, [userProgress.achievements.length]);
-
 
   return (
     <div className="space-y-6">
@@ -238,34 +242,20 @@ export const Dashboard: React.FC<DashboardProps> = ({
         ))}
       </div>
 
-   {/* Achievement Showcase */}
+      {/* Achievement Showcase */}
       {userProgress.achievements.length > 0 && (
         <div className="bg-gray-800 rounded-xl p-6 shadow-lg">
           <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-            <Trophy className="w-5 h-5 text-yellow-500" />
-            Recent Achievements
+            <Trophy className="w-5 h-5 text-yellow-500" /> Recent Achievements
           </h3>
-          <div className="overflow-hidden">
-            <div className="flex space-x-4 achievement-marquee">
+          <div className="achievement-marquee">
+            <div className="achievement-track">
               {userProgress.achievements.map((achievement) => {
                 const style = getAchievementStyle(achievement.title);
                 return (
                   <div
                     key={achievement.id}
-                    className={`m-5 hover:cursor-no-drop hover:scale-105 transition-transform ease-linear flex-shrink-0 bg-gradient-to-r ${style.bg} ${style.text} p-3 rounded-lg min-w-[120px]`}
-                  >
-                    <div className="font-semibold text-sm text-center">{achievement.title}</div>
-                    <div className="text-xs mt-1 text-center">{achievement.description}</div>
-                  </div>
-                );
-              })}
-              {/* duplicate for seamless loop */}
-              {userProgress.achievements.map((achievement) => {
-                const style = getAchievementStyle(achievement.title);
-                return (
-                  <div
-                    key={`${achievement.id}-dup`}
-                    className={`flex-shrink-0 bg-gradient-to-r ${style.bg} ${style.text} p-3 rounded-lg min-w-[120px]`}
+                    className={`flex-shrink-0 bg-gradient-to-r ${style.bg} ${style.text} p-3 rounded-lg min-w-[120px] m-5 hover:cursor-no-drop hover:scale-105 transition-transform ease-linear`}
                   >
                     <div className="font-semibold text-sm text-center">{achievement.title}</div>
                     <div className="text-xs mt-1 text-center">{achievement.description}</div>
@@ -276,6 +266,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
           </div>
         </div>
       )}
+
 
       {/* Goal Setup Dialog */}
       <GoalSetupDialog
