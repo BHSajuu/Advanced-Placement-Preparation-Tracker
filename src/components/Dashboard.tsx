@@ -99,31 +99,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
     return achievementPalettes[idx];
   };
 
-  // Inject CSS for marquee scroll
-  useEffect(() => {
-    if (userProgress.achievements.length > 0) {
-      const style = document.createElement('style');
-      const duration = userProgress.achievements.length * 5; // 5s per item
-      style.innerHTML = `
-        @keyframes marquee {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        .achievement-marquee {
-          overflow: hidden;
-        }
-        .achievement-track {
-          display: inline-flex;
-          gap: 1rem;
-          animation: marquee ${duration}s linear infinite;
-        }
-      `;
-      document.head.appendChild(style);
-      return () => {
-        document.head.removeChild(style);
-      };
-    }
-  }, [userProgress.achievements.length]);
 
   return (
     <div className="space-y-6">
@@ -242,23 +217,26 @@ export const Dashboard: React.FC<DashboardProps> = ({
         ))}
       </div>
 
-      {/* Achievement Showcase */}
+
+      {/* Achievement Showcase with custom scrollbar */}
       {userProgress.achievements.length > 0 && (
         <div className="bg-gray-800 rounded-xl p-6 shadow-lg">
           <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
             <Trophy className="w-5 h-5 text-yellow-500" /> Recent Achievements
           </h3>
-          <div className="achievement-marquee">
-            <div className="achievement-track">
+          <div className="overflow-x-auto achievement-scrollbar">
+            <div className="flex space-x-4 p-2">
               {userProgress.achievements.map((achievement) => {
                 const style = getAchievementStyle(achievement.title);
                 return (
                   <div
                     key={achievement.id}
-                    className={`flex-shrink-0 bg-gradient-to-r ${style.bg} ${style.text} p-3 rounded-lg min-w-[120px] m-5 hover:cursor-no-drop hover:scale-105 transition-transform ease-linear`}
+                    className={`flex-shrink-0 bg-gradient-to-r ${style.bg} ${style.text} p-3 rounded-lg min-w-[120px] m-1`}
                   >
-                    <div className="font-semibold text-sm text-center">{achievement.title}</div>
-                    <div className="text-xs mt-1 text-center">{achievement.description}</div>
+                    <>
+                      <div className="font-semibold text-sm text-center">{achievement.title}</div>
+                      <div className="text-xs mt-1 text-center">{achievement.description}</div>
+                    </>
                   </div>
                 );
               })}
@@ -267,7 +245,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
         </div>
       )}
 
-
       {/* Goal Setup Dialog */}
       <GoalSetupDialog
         isOpen={showGoalDialog}
@@ -275,6 +252,25 @@ export const Dashboard: React.FC<DashboardProps> = ({
         onSave={onUpdateGoals}
         existingGoals={userGoals}
       />
+
+
+      {/* Custom Scrollbar Styles */}
+      <style>{`
+        .achievement-scrollbar::-webkit-scrollbar {
+          height: 6px;
+        }
+        .achievement-scrollbar::-webkit-scrollbar-track {
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 3px;
+        }
+        .achievement-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.3);
+          border-radius: 3px;
+        }
+        .achievement-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(255, 255, 255, 0.5);
+        }
+      `}</style>
     </div>
   );
 };
