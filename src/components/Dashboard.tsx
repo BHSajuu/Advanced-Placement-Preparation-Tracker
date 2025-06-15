@@ -157,7 +157,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
       )}
 
       {/* Countdown Timer */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-6 text-white shadow-lg">
+      {userGoals && (
+         <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-6 text-white shadow-lg">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold mb-2">Day {daysPassed} of 60</h2>
@@ -182,6 +183,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
           />
         </div>
       </div>
+      )}
 
       {/* Motivational Quote */}
       <div className="bg-gray-800 rounded-xl p-6 shadow-lg border-l-4 border-blue-500">
