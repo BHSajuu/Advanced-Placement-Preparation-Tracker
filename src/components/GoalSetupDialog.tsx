@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { X, Target, Plus, Trash2, Hash, Database, Code, Globe, Network, MessageSquare, Cpu, Mic } from 'lucide-react';
-import { UserGoals, DSATopic, DSTopic } from '../types';
+import { X, Target, Plus, Trash2, Database, Code, Globe, Network, MessageSquare, Cpu, Mic } from 'lucide-react';
+import { UserGoals, DSATopic } from '../types';
 
 interface GoalSetupDialogProps {
   isOpen: boolean;
