@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Target, Plus, Trash2, Hash, Database } from 'lucide-react';
+import { X, Target, Plus, Trash2, Hash, Database, Code, Globe, Network, MessageSquare, Cpu, Mic } from 'lucide-react';
 import { UserGoals, DSATopic, DSTopic } from '../types';
 
 interface GoalSetupDialogProps {
@@ -169,7 +169,7 @@ export const GoalSetupDialog: React.FC<GoalSetupDialogProps> = ({
           {/* DSA Foundation with Topics */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-              <Hash className="w-5 h-5 text-blue-500" />
+              <Code className="w-5 h-5 text-blue-500" />
               DSA Foundation (Topic-Based Tracking)
             </h3>
 
@@ -256,7 +256,10 @@ export const GoalSetupDialog: React.FC<GoalSetupDialogProps> = ({
 
           {/* Web Development Projects */}
           <div className="space-y-3">
-            <h3 className="text-lg font-semibold text-white">Web Development Projects</h3>
+            <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+              <Globe className="w-5 h-5 text-green-500" />
+              Web Development Projects
+            </h3>
             <div className="space-y-2">
               {goals.webDevProjects.map((project, index) => (
                 <div key={index} className="flex items-center gap-2 bg-gray-700 p-2 rounded-lg">
@@ -290,7 +293,11 @@ export const GoalSetupDialog: React.FC<GoalSetupDialogProps> = ({
 
           {/* System Design Cases */}
           <div className="space-y-3">
-            <h3 className="text-lg font-semibold text-white">System Design Case Studies</h3>
+
+            <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+              <Network className="w-5 h-5 text-yellow-500" />
+              System Design Case Studies
+            </h3>
             <div className="space-y-2">
               {goals.systemDesignCases.map((caseStudy, index) => (
                 <div key={index} className="flex items-center gap-2 bg-gray-700 p-2 rounded-lg">
@@ -324,7 +331,10 @@ export const GoalSetupDialog: React.FC<GoalSetupDialogProps> = ({
 
           {/* Mock Interviews */}
           <div className="space-y-3">
-            <h3 className="text-lg font-semibold text-white">Mock Interviews</h3>
+            <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+              <MessageSquare className="w-5 h-5 text-pink-500" />
+              Mock Interviews
+            </h3>
             <div className="flex items-center gap-3">
               <label className="text-gray-300">Target Sessions:</label>
               <input
@@ -446,7 +456,10 @@ export const GoalSetupDialog: React.FC<GoalSetupDialogProps> = ({
 
           {/* CS Fundamentals */}
           <div className="space-y-3">
-            <h3 className="text-lg font-semibold text-white">CS Fundamentals Chapters</h3>
+
+            <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+              <Cpu className="w-5 h-5 text-red-500" />
+              CS Fundamentals Chapters</h3>
             <div className="space-y-2">
               {goals.csFundamentalsChapters.map((chapter, index) => (
                 <div key={index} className="flex items-center gap-2 bg-gray-700 p-2 rounded-lg">
@@ -480,7 +493,10 @@ export const GoalSetupDialog: React.FC<GoalSetupDialogProps> = ({
 
           {/* English Speaking */}
           <div className="space-y-3">
-            <h3 className="text-lg font-semibold text-white">English Speaking Practice</h3>
+            <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+              <Mic className="w-5 h-5 text-indigo-500" />
+              English Speaking Practice
+            </h3>
             <div className="flex items-center gap-3">
               <label className="text-gray-300">Target Sessions:</label>
               <input
