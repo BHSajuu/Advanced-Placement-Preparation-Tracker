@@ -75,7 +75,7 @@ export const StrikeChart: React.FC<StrikeChartProps> = ({ userProgress }) => {
           className={`w-6 h-6 rounded-sm ${getIntensity(tasksCount)} transition-all hover:ring-2 hover:ring-blue-400 cursor-pointer`}
           title={`${dateStr}: ${tasksCount} tasks completed`}
         >
-          <span className="text-xs text-black flex items-center justify-center h-full">
+          <span className={`text-xs ${tasksCount > 3 ? 'text-black' : 'text-gray-400'} flex items-center justify-center h-full`}>
             {day}
           </span>
         </div>
