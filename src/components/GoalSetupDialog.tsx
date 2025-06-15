@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, Target, Plus, Trash2, Hash, Database } from 'lucide-react';
-import { UserGoals, DSATopic , DSTopic } from '../types';
+import { UserGoals, DSATopic, DSTopic } from '../types';
 
 interface GoalSetupDialogProps {
   isOpen: boolean;
@@ -44,7 +44,7 @@ export const GoalSetupDialog: React.FC<GoalSetupDialogProps> = ({
     ],
     mockInterviews: 20,
     dataScienceTutorials: 50,
-    dataScienceTopics:[
+    dataScienceTopics: [
       { name: 'Python for Data Science', targetTutorials: 10 },
       { name: 'Data Visualization with Matplotlib', targetTutorials: 5 },
       { name: 'Pandas for Data Analysis', targetTutorials: 8 },
@@ -172,7 +172,7 @@ export const GoalSetupDialog: React.FC<GoalSetupDialogProps> = ({
               <Hash className="w-5 h-5 text-blue-500" />
               DSA Foundation (Topic-Based Tracking)
             </h3>
-            
+
             <div className="flex items-center gap-3 mb-4">
               <label className="text-gray-300">Overall Target Questions:</label>
               <input
@@ -188,7 +188,7 @@ export const GoalSetupDialog: React.FC<GoalSetupDialogProps> = ({
 
             <div className="space-y-3">
               <h4 className="text-md font-medium text-gray-300">DSA Topics & Targets</h4>
-              <div className="grid gap-3 max-h-60 overflow-y-auto">
+              <div className="grid gap-3 max-h-60 overflow-y-auto achievement-scrollbar">
                 {goals.dsaTopics.map((topic, index) => (
                   <div key={index} className="bg-gray-700 p-3 rounded-lg">
                     <div className="flex items-center gap-2 mb-2">
@@ -218,7 +218,7 @@ export const GoalSetupDialog: React.FC<GoalSetupDialogProps> = ({
                   </div>
                 ))}
               </div>
-              
+
               <div className="bg-gray-700 p-3 rounded-lg border-2 border-dashed border-gray-600">
                 <div className="flex gap-2 mb-2">
                   <input
@@ -359,7 +359,7 @@ export const GoalSetupDialog: React.FC<GoalSetupDialogProps> = ({
             </div>
             <div className="space-y-3">
               <h4 className="text-md font-medium text-gray-300">DS Topics & Targets</h4>
-              <div className="grid gap-3 max-h-60 overflow-y-auto">
+              <div className="grid gap-3 max-h-60 overflow-y-auto achievement-scrollbar">
                 {goals.dataScienceTopics?.map((topic, idx) => (
                   <div key={idx} className="bg-gray-700 p-3 rounded-lg">
                     <div className="flex items-center gap-2 mb-2">
@@ -397,46 +397,48 @@ export const GoalSetupDialog: React.FC<GoalSetupDialogProps> = ({
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
-                 </div>
-                ))}
-
-                {/* Add new DS topic */}
-                <div className="bg-gray-700 p-3 rounded-lg border-2 border-dashed border-gray-600">
-                  <div className="flex gap-2 mb-2">
-                    <input
-                      type="text"
-                      value={newDSTopic.name}
-                      onChange={(e) => setNewDSTopic({ ...newDSTopic, name: e.target.value })}
-                      placeholder="New topic name..."
-                      className="flex-1 px-2 py-1 bg-gray-600 text-white rounded border border-gray-500 focus:ring-1 focus:ring-purple-500"
-                    />
-                   <input
-                      type="number"
-                      min="1"
-                      max="100"
-                      value={newDSTopic.targetTutorials}
-                      onChange={(e) => setNewDSTopic({ ...newDSTopic, targetTutorials: parseInt(e.target.value) || 1 })}
-                      className="w-16 px-2 py-1 bg-gray-600 text-white rounded border border-gray-500 focus:ring-1 focus:ring-purple-500"
-                    />
-                    <button
-                      onClick={() => {
-                        if (newDSTopic.name.trim()) {
-                          setGoals({
-                            ...goals,
-                            dataScienceTopics: [
-                              ...goals.dataScienceTopics,
-                              { ...newDSTopic, name: newDSTopic.name.trim() }
-                            ]
-                         });
-                          setNewDSTopic({ name: '', targetTutorials: 5 });
-                        }
-                      }}
-                      className="bg-purple-500 hover:bg-purple-600 text-white px-3 py-1 rounded"
-                    >
-                      <Plus className="w-4 h-4" />
-                    </button>
                   </div>
-               </div>
+                ))}
+              </div>
+
+
+              {/* Add new DS topic */}
+              <div className="bg-gray-700 p-3 rounded-lg border-2 border-dashed border-gray-600">
+                <div className="flex gap-2 mb-2">
+                  <input
+                    type="text"
+                    value={newDSTopic.name}
+                    onChange={(e) => setNewDSTopic({ ...newDSTopic, name: e.target.value })}
+                    placeholder="New topic name..."
+                    className="flex-1 px-2 py-1 bg-gray-600 text-white rounded border border-gray-500 focus:ring-1 focus:ring-purple-500"
+                  />
+                  <input
+                    type="number"
+                    min="1"
+                    max="100"
+                    value={newDSTopic.targetTutorials}
+                    onChange={(e) => setNewDSTopic({ ...newDSTopic, targetTutorials: parseInt(e.target.value) || 1 })}
+                    className="w-16 px-2 py-1 bg-gray-600 text-white rounded border border-gray-500 focus:ring-1 focus:ring-purple-500"
+                  />
+                  <button
+                    onClick={() => {
+                      if (newDSTopic.name.trim()) {
+                        setGoals({
+                          ...goals,
+                          dataScienceTopics: [
+                            ...goals.dataScienceTopics,
+                            { ...newDSTopic, name: newDSTopic.name.trim() }
+                          ]
+                        });
+                        setNewDSTopic({ name: '', targetTutorials: 5 });
+                      }
+                    }}
+                    className="bg-purple-500 hover:bg-purple-600 text-white px-3 py-1 rounded"
+                  >
+                    <Plus className="w-4 h-4" />
+                  </button>
+                </div>
+
               </div>
             </div>
           </div>
