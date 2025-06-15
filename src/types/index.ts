@@ -38,6 +38,7 @@ export interface UserProgress {
   dailyHistory: Record<string, number>;
   dsaQuestionsHistory: Record<string, number>;
   dsaTopicsProgress: Record<string, { questionsCompleted: number; totalQuestions: number; completed: boolean }>;
+  dsTopicProgress: Record<string, { tutorialsCompleted: number; totalTutorials: number; completed: boolean }>;
 }
 
 export interface Achievement {

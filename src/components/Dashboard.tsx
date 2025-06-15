@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { Calendar, Target, Flame, Trophy, RefreshCw, Hash, Settings } from 'lucide-react';
 import { UserProgress, UserGoals } from '../types';
 import { getRandomQuote } from '../utils/motivationalQuotes';

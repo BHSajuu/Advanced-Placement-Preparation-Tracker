@@ -1,5 +1,5 @@
 import React from 'react';
-import { Code, Globe, Database, Cpu, Network, MessageSquare, Trophy, Star, Mic, CheckCircle, Target } from 'lucide-react';
+import { Code, Globe, Database, Cpu, Network, MessageSquare, Trophy, Star, Mic, CheckCircle } from 'lucide-react';
 import { UserProgress, TaskCategory, Milestone, UserGoals, Task } from '../types';
 
 interface ProgressTrackerProps {
@@ -11,7 +11,6 @@ interface ProgressTrackerProps {
 
 export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
   userProgress,
-  milestones,
   userGoals,
   tasks
 }) => {

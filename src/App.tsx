@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Dashboard } from './components/Dashboard';
 import { TaskManager } from './components/TaskManager';
@@ -25,7 +25,8 @@ function App() {
     achievements: [],
     dailyHistory: {},
     dsaQuestionsHistory: {},
-    dsaTopicsProgress: {}
+    dsaTopicsProgress: {},
+    dsTopicProgress: {}
   });
 
   const [milestones, setMilestones] = useLocalStorage<Milestone[]>('prep-milestones', [
@@ -44,7 +45,7 @@ function App() {
       title: 'Web Development Project',
       description: 'Build and deploy a full-stack application',
       category: 'Web Dev',
-      target: 5,
+      target: 1,
       current: 0,
       xp: 1000,
       completed: false
@@ -54,7 +55,7 @@ function App() {
       title: 'System Design Mastery',
       description: 'Complete 10 system design case studies',
       category: 'System Design',
-      target: 10,
+      target: 1,
       current: 0,
       xp: 800,
       completed: false
@@ -64,7 +65,7 @@ function App() {
       title: 'Mock Interview Champion',
       description: 'Complete 20 mock interviews with good feedback',
       category: 'Mock Interview',
-      target: 20,
+      target: 5,
       current: 0,
       xp: 600,
       completed: false
@@ -72,9 +73,9 @@ function App() {
     {
       id: uuidv4(),
       title: 'Data Science Basics',
-      description: 'Finish 100 data science tutorials',
+      description: 'Finish 50 data science tutorials',
       category: 'Data Science',
-      target: 100,
+      target: 50,
       current: 0,
       xp: 700,
       completed: false
@@ -82,9 +83,9 @@ function App() {
     {
       id: uuidv4(),
       title: 'CS Fundamentals Core',
-      description: 'Master 15 CS fundamentals topics',
+      description: 'Master 5 CS fundamentals topics',
       category: 'CS Fundamentals',
-      target: 15,
+      target: 5,
       current: 0,
       xp: 700,
       completed: false
@@ -92,9 +93,9 @@ function App() {
     {
       id: uuidv4(),
       title: 'English Speaking Fluency',
-      description: 'Complete 30 English speaking practice sessions',
+      description: 'Complete 10 English speaking practice sessions',
       category: 'English Speaking Practice',
-      target: 30,
+      target: 10,
       current: 0,
       xp: 400,
       completed: false
@@ -178,6 +179,51 @@ function App() {
       if (topicProgress.completed && topicProgress.questionsCompleted < topicProgress.totalQuestions) {
         topicProgress.completed = false;
         newProgress.totalXP = Math.max(0, newProgress.totalXP - 150); // Remove bonus XP
+      }
+    }
+
+    setUserProgress(newProgress);
+  };
+
+  // New: Update Data Science Topic Progress
+  const updateDSTopicProgress = (task: Task, isCompleting: boolean) => {
+    if (task.category !== 'Data Science' || !task.dataScienceTopicName || !userGoals?.dataScienceTopics) return;
+
+    const newProgress = { ...userProgress };
+    const topicName = task.dataScienceTopicName;
+    const tutorials = task.tutorialCount || 1;
+
+    if (!newProgress.dsTopicProgress[topicName]) {
+      const topic = userGoals.dataScienceTopics.find(t => t.name === topicName);
+      newProgress.dsTopicProgress[topicName] = {
+        tutorialsCompleted: 0,
+        totalTutorials: topic?.targetTutorials || 0,
+        completed: false
+      };
+    }
+
+    const topicProgress = newProgress.dsTopicProgress[topicName];
+    if (isCompleting) {
+      topicProgress.tutorialsCompleted += tutorials;
+      if (!topicProgress.completed && topicProgress.tutorialsCompleted >= topicProgress.totalTutorials) {
+        topicProgress.completed = true;
+        const achievement: Achievement = {
+          id: uuidv4(),
+          title: `${topicName} Tutorials Completed!`,
+          description: `Finished all tutorials for ${topicName}`,
+          type: 'topic',
+          icon: 'trophy',
+          unlockedAt: new Date()
+        };
+        newProgress.achievements.push(achievement);
+        newProgress.totalXP += 150;
+        setCurrentAchievement(achievement);
+      }
+    } else {
+      topicProgress.tutorialsCompleted = Math.max(0, topicProgress.tutorialsCompleted - tutorials);
+      if (topicProgress.completed && topicProgress.tutorialsCompleted < topicProgress.totalTutorials) {
+        topicProgress.completed = false;
+        newProgress.totalXP = Math.max(0, newProgress.totalXP - 150);
       }
     }
 
@@ -298,6 +344,9 @@ function App() {
 
       // Update DSA topic progress
       updateDSATopicProgress(task, true);
+      
+       // Update Data Science topic progress
+      updateDSTopicProgress(task, true);
 
       // Update milestones with smart progress calculation
       const smartProgressIncrement = calculateSmartProgress(task, true);
@@ -418,7 +467,8 @@ function App() {
       achievements: [],
       dailyHistory: {},
       dsaQuestionsHistory: {},
-      dsaTopicsProgress: {}
+      dsaTopicsProgress: {},
+      dsTopicProgress: {}
     });
     setMilestones([
       {
