@@ -158,16 +158,16 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
       {/* Countdown Timer */}
       {userGoals && (
-         <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-6 text-white shadow-lg">
+         <div className="bg-gradient-to-r  from-slate-800 to-[#7886C7] rounded-xl p-6 text-white shadow-lg hover:shadow-lg hover:shadow-blue-300/30 transition-shadow hover:cursor-pointer">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold mb-2">Day {daysPassed} of 60</h2>
-            <p className="text-blue-100 text-lg">
+            <p className="text-yellow-600 text-lg">
               {daysRemaining > 0 ? `${daysRemaining} days remaining` : 'Preparation Complete!'}
             </p>
           </div>
           <div className="text-right">
-            <div className="bg-white/20 rounded-lg p-3">
+            <div className="bg-black/65 rounded-lg p-3">
               <Calendar className="w-8 h-8 mb-2" />
               <div className="text-sm font-medium">
                 {Math.round((daysPassed / 60) * 100)}%
@@ -178,7 +178,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
         <div className="mt-4 bg-white/20 rounded-full h-2">
           <div
-            className="bg-white rounded-full h-full transition-all duration-500"
+            className="bg-[#26dc72] rounded-full h-full transition-all duration-500"
             style={{ width: `${Math.min((daysPassed / 60) * 100, 100)}%` }}
           />
         </div>
@@ -186,7 +186,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
       )}
 
       {/* Motivational Quote */}
-      <div className="bg-gray-800 rounded-xl p-6 shadow-lg border-l-4 border-blue-500">
+      <div className="bg-gray-800 rounded-xl p-6 shadow-lg border-l-4 border-green-500 hover:shadow-lg hover:shadow-blue-300/30 transition-shadow hover:cursor-pointer">
         <h3 className="text-lg font-semibold text-white mb-2">Daily Motivation</h3>
         <p className="text-gray-400 italic text-lg leading-relaxed">
           "{getRandomQuote()}"
@@ -196,7 +196,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat, index) => (
-          <div key={index} className="bg-gray-800 rounded-xl p-6 shadow-lg">
+          <div key={index} className="bg-gray-800 rounded-xl p-6 shadow-lg hover:shadow-lg hover:shadow-blue-300/30 transition-shadow hover:cursor-pointer">
             <div className="flex items-center justify-between mb-4">
               <div className={`bg-gradient-to-r ${stat.color} p-2 rounded-lg text-white`}>
                 {stat.icon}
@@ -233,7 +233,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 return (
                   <div
                     key={achievement.id}
-                    className={`flex-shrink-0 bg-gradient-to-r ${style.bg} ${style.text} p-3 rounded-lg min-w-[120px] m-1 hover:scale-105 transition-transform`}
+                    className={`flex-shrink-0 bg-gradient-to-r ${style.bg} ${style.text} p-3 rounded-lg min-w-[120px] m-1 hover:scale-105 transition-transform `}
                   >
                     <>
                       <div className="font-semibold text-sm text-center">{achievement.title}</div>

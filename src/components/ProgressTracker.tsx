@@ -181,7 +181,7 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
   return (
     <div className="space-y-6">
       {/* Level and XP Progress */}
-      <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl p-6 text-white shadow-lg">
+      <div className="bg-gradient-to-r from-slate-800 to-[#7886C7] rounded-xl p-6 text-white shadow-lg hover:shadow-lg hover:shadow-blue-300/30 transition-shadow hover:cursor-pointer">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
             <div className="bg-white/20 p-2 rounded-lg">
@@ -213,7 +213,7 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
 
 
         {/* DSA Questions Summary */}
-      <div className="bg-gray-800 rounded-xl p-6 shadow-lg border-l-4 border-blue-500">
+      <div className="bg-gray-800 rounded-xl p-6 shadow-lg border-l-4 border-blue-500 hover:shadow-lg hover:shadow-blue-300/30 transition-shadow hover:cursor-pointer">
         <div className="flex items-center gap-3 mb-4">
           <div className="bg-gradient-to-r from-blue-500 to-blue-600 p-2 rounded-lg text-white">
             <Code className="w-5 h-5" />
@@ -265,9 +265,9 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
             Goal Progress (Smart Tracking)
           </h3>
 
-          <div className="grid gap-4">
+          <div className="grid gap-6">
             {smartProgress.map((progress) => (
-              <div key={progress.category} className="bg-gray-800 rounded-xl p-6 shadow-lg">
+              <div key={progress.category} className="bg-gray-800 rounded-xl p-6 shadow-lg hover:shadow-lg hover:shadow-blue-300/30 transition-shadow hover:cursor-pointer">
                 <div className="flex items-center gap-3 mb-4">
                   <div className={`bg-gradient-to-r ${categoryColors[progress.category]} p-2 rounded-lg text-white`}>
                     {categoryIcons[progress.category]}
@@ -297,13 +297,13 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
                 {progress.items && progress.items.length > 0 && (
                   <div className="space-y-2">
                     <h5 className="text-sm font-medium text-gray-300">Detailed Progress:</h5>
-                    <div className="grid gap-2">
+                    <div className="grid gap-4 lg:pl-10">
                       {progress.items.map((item, index) => {
                         const isCompleted = progress.completedItems?.includes(item);
                         return (
                           <div
                             key={index}
-                            className={`flex items-center gap-2 p-2 rounded-lg text-sm ${isCompleted
+                            className={`flex w-[300px] lg:w-[1300px] items-center gap-2 p-2 hover:scale-105 transition-transform ease-linear rounded-lg text-sm ${isCompleted
                               ? 'bg-green-900/30 text-green-200'
                               : 'bg-gray-700 text-gray-300'
                               }`}
@@ -328,16 +328,16 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
 
       {/* Advanced DSA Topic Progress */}
       {userGoals?.dsaTopics && dsaTopicProgress.length > 0 && (
-        <div className="space-y-4">
+        <div className="space-y-4 pt-5">
           <h3 className="text-xl font-semibold text-white flex items-center gap-2">
             <Code className="w-5 h-5 text-blue-500" />
             DSA Topic-wise Progress
           </h3>
 
-          <div className="bg-gray-800 rounded-xl p-6 shadow-lg">
+          <div className="bg-gray-800 rounded-xl p-6 shadow-lg hover:shadow-lg hover:shadow-blue-300/30 transition-shadow hover:cursor-pointer">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 ">
               {dsaTopicProgress.map((topic, index) => (
-                <div key={index} className="border-l-4 border-blue-500 pl-4 mx-10 my-2">
+                <div key={index} className="h-20  border-l-4  border-blue-500 px-2 lg:px-4 lg:mx-10 my-2 hover:scale-105 transition-transform ease-linear hover:shadow-lg hover:shadow-blue-300/30  hover:cursor-pointer">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex-1">
                       <h5 className="font-medium text-white">{topic.name}</h5>
@@ -377,16 +377,16 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
 
        {/* Advanced Data Science Topic Progress */}
       {userGoals?.dataScienceTopics && dsTopicProgress.length > 0 && (
-        <div className="space-y-4">
+        <div className="space-y-4 pt-5">
           <h3 className="text-xl font-semibold text-white flex items-center gap-2">
             <Database className="w-5 h-5 text-purple-500" />
             Data Science Topic‑wise Progress
           </h3>
 
-          <div className="bg-gray-800 rounded-xl p-6 shadow-lg">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="bg-gray-800 rounded-xl p-6 shadow-lg hover:shadow-lg hover:shadow-blue-300/60 transition-shadow hover:cursor-pointer">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 ">
               {dsTopicProgress.map((topic, i) => (
-                <div key={i} className="border-l-4 border-purple-500 pl-4 mx-10 my-2">
+                <div key={i} className="h-20  border-l-4 border-purple-500 px-2 lg:px-4 lg:mx-10 my-2 hover:scale-105 transition-transform ease-linear hover:shadow-lg hover:shadow-blue-300/30  hover:cursor-pointer">
                   <div className="flex items-center justify-between mb-2">
                     <h5 className="font-medium text-white">{topic.name}</h5>
                     <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
