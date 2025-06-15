@@ -20,6 +20,7 @@ export interface Task {
   completedAt?: Date;
   questionsCount?: number;
   dsaTopicName?: string;
+  dataScienceTopicName?: string;
   projectName?: string;
   caseStudyName?: string;
   tutorialCount?: number;
@@ -64,6 +65,11 @@ export interface DSATopic {
   targetQuestions: number;
 }
 
+export interface DSTopic {
+  name: string;
+  targetTutorials: number;
+}
+
 export interface UserGoals {
   dsaQuestions: number;
   dsaTopics: DSATopic[];
@@ -71,6 +77,7 @@ export interface UserGoals {
   systemDesignCases: string[];
   mockInterviews: number;
   dataScienceTutorials: number;
+  dataScienceTopics: DSTopic[];
   csFundamentalsChapters: string[];
   englishSpeakingSessions: number;
 }

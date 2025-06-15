@@ -10,12 +10,12 @@ interface TaskManagerProps {
   onDeleteTask: (taskId: string) => void;
 }
 
-export const TaskManager: React.FC<TaskManagerProps> = ({ 
-  tasks, 
+export const TaskManager: React.FC<TaskManagerProps> = ({
+  tasks,
   userGoals,
-  onAddTask, 
-  onToggleTask, 
-  onDeleteTask 
+  onAddTask,
+  onToggleTask,
+  onDeleteTask
 }) => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [newTask, setNewTask] = useState({
@@ -25,6 +25,7 @@ export const TaskManager: React.FC<TaskManagerProps> = ({
     xp: 50,
     questionsCount: 1,
     dsaTopicName: '',
+    dataScienceTopicName: '',
     projectName: '',
     caseStudyName: '',
     tutorialCount: 1,
@@ -74,6 +75,7 @@ export const TaskManager: React.FC<TaskManagerProps> = ({
         break;
       case 'Data Science':
         taskToAdd.tutorialCount = newTask.tutorialCount;
+        if (newTask.dataScienceTopicName) taskToAdd.dataScienceTopicName = newTask.dataScienceTopicName;
         break;
       case 'Mock Interview':
         taskToAdd.sessionCount = newTask.sessionCount;
@@ -95,6 +97,7 @@ export const TaskManager: React.FC<TaskManagerProps> = ({
       xp: 50,
       questionsCount: 1,
       dsaTopicName: '',
+      dataScienceTopicName: '',
       projectName: '',
       caseStudyName: '',
       tutorialCount: 1,
@@ -199,20 +202,37 @@ export const TaskManager: React.FC<TaskManagerProps> = ({
 
       case 'Data Science':
         return (
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              Tutorial Count
-            </label>
-            <input
-              type="number"
-              min="1"
-              max="20"
-              value={newTask.tutorialCount}
-              onChange={(e) => setNewTask({ ...newTask, tutorialCount: parseInt(e.target.value) || 1 })}
-              className="w-full px-3 py-2 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-700 text-white"
-              placeholder="Number of tutorials"
-            />
-          </div>
+          <>
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Tutorial Count
+              </label>
+              <input
+                type="number"
+                min="1"
+                max="20"
+                value={newTask.tutorialCount}
+                onChange={(e) => setNewTask({ ...newTask, tutorialCount: parseInt(e.target.value) || 1 })}
+                className="w-full px-3 py-2 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-700 text-white"
+                placeholder="Number of tutorials"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Data Science Topic
+              </label>
+              <select
+                value={newTask.dataScienceTopicName}
+                onChange={(e) => setNewTask({ ...newTask, dataScienceTopicName: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-700 text-white"
+              >
+                <option value="">Select Data Science topic</option>
+                {userGoals?.dataScienceTopics.map((topic, index) => (
+                  <option key={index} value={topic.name}>{topic.name}</option>
+                ))}
+              </select>
+            </div>
+          </>
         );
 
       case 'Mock Interview':
@@ -260,7 +280,7 @@ export const TaskManager: React.FC<TaskManagerProps> = ({
 
   const getTaskDetails = (task: Task) => {
     const details = [];
-    
+
     if (task.questionsCount) {
       details.push(`${task.questionsCount} questions`);
     }
@@ -273,6 +293,9 @@ export const TaskManager: React.FC<TaskManagerProps> = ({
     if (task.caseStudyName) {
       details.push(`Case: ${task.caseStudyName}`);
     }
+    if (task.dataScienceTopicName) {
+      details.push(`Topic : ${task.dataScienceTopicName}`);
+    }
     if (task.tutorialCount) {
       details.push(`${task.tutorialCount} tutorials`);
     }
@@ -282,7 +305,7 @@ export const TaskManager: React.FC<TaskManagerProps> = ({
     if (task.chapterName) {
       details.push(`Chapter: ${task.chapterName}`);
     }
-    
+
     return details.join(' • ');
   };
 
@@ -411,19 +434,17 @@ export const TaskManager: React.FC<TaskManagerProps> = ({
                 tasksByTimeSlot[slot].map(task => (
                   <div
                     key={task.id}
-                    className={`flex items-center gap-3 p-4 rounded-lg border transition-all duration-200 ${
-                      task.completed
-                        ? 'bg-green-900/20 border-green-800'
-                        : 'bg-gray-700 border-gray-600 hover:shadow-md hover:border-gray-500'
-                    }`}
+                    className={`flex items-center gap-3 p-4 rounded-lg border transition-all duration-200 ${task.completed
+                      ? 'bg-green-900/20 border-green-800'
+                      : 'bg-gray-700 border-gray-600 hover:shadow-md hover:border-gray-500'
+                      }`}
                   >
                     <button
                       onClick={() => onToggleTask(task.id)}
-                      className={`transition-colors ${
-                        task.completed
-                          ? 'text-green-500 hover:text-green-600'
-                          : 'text-gray-400 hover:text-blue-500'
-                      }`}
+                      className={`transition-colors ${task.completed
+                        ? 'text-green-500 hover:text-green-600'
+                        : 'text-gray-400 hover:text-blue-500'
+                        }`}
                     >
                       {task.completed ? (
                         <CheckCircle2 className="w-5 h-5" />
@@ -442,13 +463,13 @@ export const TaskManager: React.FC<TaskManagerProps> = ({
                           {task.category}
                         </span>
                       </div>
-                      
+
                       {getTaskDetails(task) && (
                         <div className="text-sm text-gray-400 mb-1">
                           {getTaskDetails(task)}
                         </div>
                       )}
-                      
+
                       <div className="flex items-center gap-2 text-xs text-gray-400">
                         <Star className="w-3 h-3" />
                         <span>{task.xp} XP</span>

@@ -146,6 +146,29 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
     });
   };
 
+ // calculate Data science topic-wise progress
+ const calculateDSTopicProgress = () => {
+    if (!userGoals?.dataScienceTopics) return [];
+
+    const completedDSTasks = tasks
+      .filter(task => task.category === 'Data Science' && task.completed);
+
+    return userGoals.dataScienceTopics.map(topic => {
+      const topicTasks = completedDSTasks.filter(t => t.dataScienceTopicName === topic.name);
+      const tutorialsDone = topicTasks.reduce((sum, t) => sum + (t.tutorialCount || 0), 0);
+
+      return {
+        name: topic.name,
+        targetTutorials: topic.targetTutorials,
+        tutorialsDone,
+        completed: tutorialsDone >= topic.targetTutorials,
+        progressPercentage: Math.min((tutorialsDone / topic.targetTutorials) * 100, 100)
+      };
+    });
+  };
+
+  const dsTopicProgress = calculateDSTopicProgress(); 
+
   const smartProgress = calculateSmartProgress();
   const dsaTopicProgress = calculateDSATopicProgress();
   const totalDSAQuestions = Object.values(userProgress.dsaQuestionsHistory).reduce((sum, count) => sum + count, 0);
@@ -344,6 +367,51 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
                         ? `${topic.targetQuestions - topic.questionsCompleted} questions remaining`
                         : 'Topic completed!'
                       }
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+       {/* Advanced Data Science Topic Progress */}
+      {userGoals?.dataScienceTopics && dsTopicProgress.length > 0 && (
+        <div className="space-y-4">
+          <h3 className="text-xl font-semibold text-white flex items-center gap-2">
+            <Database className="w-5 h-5 text-purple-500" />
+            Data Science Topic‑wise Progress
+          </h3>
+
+          <div className="bg-gray-800 rounded-xl p-6 shadow-lg">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {dsTopicProgress.map((topic, i) => (
+                <div key={i} className="border-l-4 border-purple-500 pl-4 mx-10 my-2">
+                  <div className="flex items-center justify-between mb-2">
+                    <h5 className="font-medium text-white">{topic.name}</h5>
+                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                      topic.completed
+                        ? 'bg-green-800 text-green-100'
+                        : 'bg-gray-700 text-gray-300'
+                    }`}>
+                      {topic.tutorialsDone}/{topic.targetTutorials} Tuts
+                    </span>
+                  </div>
+
+                  <div className="bg-gray-700 rounded-full h-2 mb-2">
+                    <div
+                      className="bg-gradient-to-r from-purple-500 to-purple-600 rounded-full h-full transition-all duration-500"
+                      style={{ width: `${topic.progressPercentage}%` }}
+                    />
+                  </div>
+
+                  <div className="flex justify-between items-center text-xs text-gray-400">
+                    <span>{Math.round(topic.progressPercentage)}% Complete</span>
+                    <span>
+                      {topic.targetTutorials - topic.tutorialsDone > 0
+                        ? `${topic.targetTutorials - topic.tutorialsDone} tuts remaining`
+                        : 'Topic completed!'}
                     </span>
                   </div>
                 </div>

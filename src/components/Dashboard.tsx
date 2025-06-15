@@ -81,7 +81,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
   // Define color palettes for achievements
   const achievementPalettes = [
-    { bg: 'from-green-500 to-teal-500', text: 'text-white' },
+    { bg: 'from-green-500 to-teal-500', text: 'text-gray-800' },
     { bg: 'from-blue-500 to-purple-500', text: 'text-white' },
     { bg: 'from-yellow-500 to-orange-700', text: 'text-gray-900' },
     { bg: 'from-pink-500 to-red-500', text: 'text-white' },
@@ -225,13 +225,13 @@ export const Dashboard: React.FC<DashboardProps> = ({
             <Trophy className="w-5 h-5 text-yellow-500" /> Recent Achievements
           </h3>
           <div className="overflow-x-auto achievement-scrollbar">
-            <div className="flex space-x-4 p-2">
+            <div className=" flex space-x-4 p-2 hover:cursor-no-drop ">
               {userProgress.achievements.map((achievement) => {
                 const style = getAchievementStyle(achievement.title);
                 return (
                   <div
                     key={achievement.id}
-                    className={`flex-shrink-0 bg-gradient-to-r ${style.bg} ${style.text} p-3 rounded-lg min-w-[120px] m-1`}
+                    className={`flex-shrink-0 bg-gradient-to-r ${style.bg} ${style.text} p-3 rounded-lg min-w-[120px] m-1 hover:scale-105 transition-transform`}
                   >
                     <>
                       <div className="font-semibold text-sm text-center">{achievement.title}</div>
