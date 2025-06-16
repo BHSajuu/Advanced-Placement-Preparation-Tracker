@@ -337,7 +337,7 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
           <div className="bg-gray-800 rounded-xl p-6 shadow-lg hover:shadow-lg hover:shadow-blue-300/30 transition-shadow hover:cursor-pointer">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 ">
               {dsaTopicProgress.map((topic, index) => (
-                <div key={index} className="h-20  border-l-4  border-blue-500 px-2 lg:px-4 lg:mx-10 my-2 hover:scale-105 transition-transform ease-linear hover:shadow-lg hover:shadow-blue-300/30  hover:cursor-pointer">
+                <div key={index} className="py-2 border-l-4  border-blue-500 px-2 lg:px-4 lg:mx-10 my-2 hover:scale-105 transition-transform ease-linear hover:shadow-lg hover:shadow-blue-300/30  hover:cursor-pointer">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex-1">
                       <h5 className="font-medium text-white">{topic.name}</h5>
@@ -384,12 +384,12 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
           </h3>
 
           <div className="bg-gray-800 rounded-xl p-6 shadow-lg hover:shadow-lg hover:shadow-blue-300/60 transition-shadow hover:cursor-pointer">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 ">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-5">
               {dsTopicProgress.map((topic, i) => (
-                <div key={i} className="h-20  border-l-4 border-purple-500 px-2 lg:px-4 lg:mx-10 my-2 hover:scale-105 transition-transform ease-linear hover:shadow-lg hover:shadow-blue-300/30  hover:cursor-pointer">
+                <div key={i} className=" py-2 border-l-4 border-purple-500 px-2 lg:px-4 lg:mx-10 my-2 hover:scale-105 transition-transform ease-linear hover:shadow-lg hover:shadow-blue-300/30  hover:cursor-pointer">
                   <div className="flex items-center justify-between mb-2">
-                    <h5 className="font-medium text-white">{topic.name}</h5>
-                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                    <h5 className="font-medium text-white w-60">{topic.name}</h5>
+                    <span className={`px-2 py-2 rounded-full text-xs font-semibold ${
                       topic.completed
                         ? 'bg-green-800 text-green-100'
                         : 'bg-gray-700 text-gray-300'
