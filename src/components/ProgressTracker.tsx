@@ -125,59 +125,52 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
     return progress;
   };
 
-  // Calculate DSA topic-wise progress
+  // Calculate DSA topic-wise progress using persistent storage
   const calculateDSATopicProgress = () => {
     if (!userGoals?.dsaTopics) return [];
 
-    const completedDSATasks = tasks.filter(task => task.category === 'DSA' && task.completed);
-
     return userGoals.dsaTopics.map(topic => {
-      const topicTasks = completedDSATasks.filter(task => task.dsaTopicName === topic.name);
-      const questionsCompleted = topicTasks.reduce((sum, task) => sum + (task.questionsCount || 0), 0);
-
+      const progress = userProgress.dsaTopicsProgress[topic.name] || { questionsCompleted: 0, totalQuestions: topic.targetQuestions, completed: false };
+      const { questionsCompleted, totalQuestions, completed } = progress;
       return {
         name: topic.name,
-        targetQuestions: topic.targetQuestions,
+        targetQuestions: totalQuestions,
         questionsCompleted,
-        completed: questionsCompleted >= topic.targetQuestions,
-        progressPercentage: Math.min((questionsCompleted / topic.targetQuestions) * 100, 100)
+        completed,
+        progressPercentage: Math.min((questionsCompleted / totalQuestions) * 100, 100)
       };
     });
   };
 
- // calculate Data science topic-wise progress
- const calculateDSTopicProgress = () => {
+  // Calculate Data Science topic-wise progress using persistent storage
+  const calculateDSTopicProgress = () => {
     if (!userGoals?.dataScienceTopics) return [];
 
-    const completedDSTasks = tasks
-      .filter(task => task.category === 'Data Science' && task.completed);
-
     return userGoals.dataScienceTopics.map(topic => {
-      const topicTasks = completedDSTasks.filter(t => t.dataScienceTopicName === topic.name);
-      const tutorialsDone = topicTasks.reduce((sum, t) => sum + (t.tutorialCount || 0), 0);
-
+      const progress = userProgress.dsTopicProgress[topic.name] || { tutorialsCompleted: 0, totalTutorials: topic.targetTutorials, completed: false };
+      const { tutorialsCompleted, totalTutorials, completed } = progress;
       return {
         name: topic.name,
-        targetTutorials: topic.targetTutorials,
-        tutorialsDone,
-        completed: tutorialsDone >= topic.targetTutorials,
-        progressPercentage: Math.min((tutorialsDone / topic.targetTutorials) * 100, 100)
+        targetTutorials: totalTutorials,
+        tutorialsDone: tutorialsCompleted,
+        completed,
+        progressPercentage: Math.min((tutorialsCompleted / totalTutorials) * 100, 100)
       };
     });
   };
-
-  const dsTopicProgress = calculateDSTopicProgress(); 
 
   const smartProgress = calculateSmartProgress();
   const dsaTopicProgress = calculateDSATopicProgress();
+  const dsTopicProgress = calculateDSTopicProgress();
   const totalDSAQuestions = Object.values(userProgress.dsaQuestionsHistory).reduce((sum, count) => sum + count, 0);
 
-    // Calculate additional DSA statistics
+
+  // Calculate additional DSA statistics
   const dsaQuestionsArray = Object.values(userProgress.dsaQuestionsHistory);
   const activeDSADays = dsaQuestionsArray.filter(count => count > 0).length;
   const avgQuestionsPerDay = activeDSADays > 0 ? (totalDSAQuestions / activeDSADays).toFixed(1) : '0';
   const maxQuestionsInDay = Math.max(...dsaQuestionsArray, 0);
-  
+
   return (
     <div className="space-y-6">
       {/* Level and XP Progress */}
@@ -212,7 +205,7 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
       </div>
 
 
-        {/* DSA Questions Summary */}
+      {/* DSA Questions Summary */}
       <div className="bg-gray-800 rounded-xl p-6 shadow-lg border-l-4 border-blue-500 hover:shadow-lg hover:shadow-blue-300/30 transition-shadow hover:cursor-pointer">
         <div className="flex items-center gap-3 mb-4">
           <div className="bg-gradient-to-r from-blue-500 to-blue-600 p-2 rounded-lg text-white">
@@ -223,7 +216,7 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
             <p className="text-gray-400">Total questions solved: {totalDSAQuestions}</p>
           </div>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           <div className="bg-gray-700 rounded-lg p-4">
             <div className="text-2xl font-bold text-blue-400">{totalDSAQuestions}</div>
@@ -375,7 +368,7 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
         </div>
       )}
 
-       {/* Advanced Data Science Topic Progress */}
+      {/* Advanced Data Science Topic Progress */}
       {userGoals?.dataScienceTopics && dsTopicProgress.length > 0 && (
         <div className="space-y-4 pt-5">
           <h3 className="text-xl font-semibold text-white flex items-center gap-2">
@@ -389,11 +382,10 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
                 <div key={i} className=" py-2 border-l-4 border-purple-500 px-2 lg:px-4 lg:mx-10 my-2 hover:scale-105 transition-transform ease-linear hover:shadow-lg hover:shadow-blue-300/30  hover:cursor-pointer">
                   <div className="flex items-center justify-between mb-2">
                     <h5 className="font-medium text-white w-60">{topic.name}</h5>
-                    <span className={`px-2 py-2 rounded-full text-xs font-semibold ${
-                      topic.completed
+                    <span className={`px-2 py-2 rounded-full text-xs font-semibold ${topic.completed
                         ? 'bg-green-800 text-green-100'
                         : 'bg-gray-700 text-gray-300'
-                    }`}>
+                      }`}>
                       {topic.tutorialsDone}/{topic.targetTutorials} Tuts
                     </span>
                   </div>
