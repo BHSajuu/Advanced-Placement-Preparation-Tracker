@@ -80,25 +80,27 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
 
   // Define color palettes for achievements
-  const achievementPalettes = [
+ const achievementPalettes = [
     { bg: 'from-green-500 to-teal-500', text: 'text-gray-800' },
     { bg: 'from-blue-500 to-purple-500', text: 'text-white' },
     { bg: 'from-yellow-500 to-orange-700', text: 'text-gray-900' },
     { bg: 'from-pink-500 to-red-500', text: 'text-white' },
     { bg: 'from-indigo-500 to-blue-500', text: 'text-white' },
-    { bg: 'from-gray-500 to-gray-700', text: 'text-white' }
+    { bg: 'from-gray-500 to-gray-700', text: 'text-white' },
+    { bg: 'from-red-400 to-red-600', text: 'text-white' },
+    { bg: 'from-purple-400 to-purple-600', text: 'text-white' },
+    { bg: 'from-orange-400 to-orange-600', text: 'text-gray-900' },
+    { bg: 'from-cyan-400 to-cyan-600', text: 'text-gray-900' },
+    { bg: 'from-pink-400 to-pink-600', text: 'text-white' },
+    { bg: 'from-yellow-400 to-yellow-600', text: 'text-gray-900' }
   ];
 
-  const getAchievementStyle = (title: string) => {
-    // Simple hash based on title to pick a palette
-    let hash = 0;
-    for (let i = 0; i < title.length; i++) {
-      hash = title.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    const idx = Math.abs(hash) % achievementPalettes.length;
+ 
+  // Randomly pick a palette for each achievement
+  const getAchievementStyle = () => {
+    const idx = Math.floor(Math.random() * achievementPalettes.length);
     return achievementPalettes[idx];
   };
-
 
   return (
     <div className="space-y-6">
@@ -229,11 +231,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
           <div className="overflow-x-auto achievement-scrollbar">
             <div className=" flex space-x-4 p-2 hover:cursor-no-drop ">
               {userProgress.achievements.map((achievement) => {
-                const style = getAchievementStyle(achievement.title);
+                const style = getAchievementStyle();
                 return (
                   <div
                     key={achievement.id}
-                    className={`flex-shrink-0 bg-gradient-to-r ${style.bg} ${style.text} p-3 rounded-lg min-w-[120px] m-1 hover:scale-105 transition-transform `}
+                    className={`flex-shrink-0 bg-gradient-to-r ${style.bg} ${style.text} p-3 rounded-lg min-w-[120px] m-1 hover:scale-105 transition-transform duration-300 shadow-lg`}
                   >
                     <>
                       <div className="font-semibold text-sm text-center">{achievement.title}</div>

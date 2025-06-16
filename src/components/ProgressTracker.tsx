@@ -296,7 +296,7 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
                         return (
                           <div
                             key={index}
-                            className={`flex w-[300px] lg:w-[1300px] items-center gap-2 p-2 hover:scale-105 transition-transform ease-linear rounded-lg text-sm ${isCompleted
+                            className={`flex w-[300px] lg:w-[1300px] items-center gap-2 p-2 hover:scale-105 transition-transform ease-linear duration-300 rounded-lg text-sm ${isCompleted
                               ? 'bg-green-900/30 text-green-200'
                               : 'bg-gray-700 text-gray-300'
                               }`}

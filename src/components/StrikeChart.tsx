@@ -86,11 +86,11 @@ export const StrikeChart: React.FC<StrikeChartProps> = ({ userProgress }) => {
   };
 
   return (
-    <div className="bg-gray-800 rounded-xl p-6 shadow-lg">
+    <div className="bg-gray-800 rounded-xl p-6  shadow-lg hover:shadow-lg hover:shadow-blue-300/30 transition-shadow">
       <h3 className="text-lg font-semibold mb-4 text-white">Monthly Consistency</h3>
       
       {/* Month navigation */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-center gap-24 md:gap-56 mb-4">
         <button 
           onClick={() => navigateMonth(-1)}
           className="text-gray-300 hover:text-white p-2 rounded-full hover:bg-gray-700"
@@ -109,7 +109,7 @@ export const StrikeChart: React.FC<StrikeChartProps> = ({ userProgress }) => {
       </div>
 
       {/* Calendar grid */}
-      <div className="grid grid-cols-7 gap-1 mb-4 ml-5 lg:ml-28 ">
+      <div className="lg:w-[500px] text-center grid grid-cols-7  gap-1 justify-items-center mb-4 md:ml-5 lg:ml-[470px] ">
         {dayLabels.map((day) => (
           <div key={day} className="text-xs text-gray-400 font-medium py-1">
             {day}
@@ -132,20 +132,20 @@ export const StrikeChart: React.FC<StrikeChartProps> = ({ userProgress }) => {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 pt-6 border-t border-gray-700">
-        <div className="text-center">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-10 p-10 border-t border-gray-700">
+        <div className="py-5 text-center shadow-lg hover:shadow-lg hover:shadow-blue-300/30 transition-shadow">
           <div className="text-2xl font-bold text-white">{userProgress.currentStreak}</div>
           <div className="text-sm text-gray-400">Current Streak</div>
         </div>
-        <div className="text-center">
+        <div className="py-5 text-center shadow-lg hover:shadow-lg hover:shadow-blue-300/30 transition-shadow">
           <div className="text-2xl font-bold text-white">{userProgress.longestStreak}</div>
           <div className="text-sm text-gray-400">Longest Streak</div>
         </div>
-        <div className="text-center">
+        <div className="py-5 text-center shadow-lg hover:shadow-lg hover:shadow-blue-300/30 transition-shadow">
           <div className="text-2xl font-bold text-white">{userProgress.completedTasks}</div>
           <div className="text-sm text-gray-400">Total Tasks</div>
         </div>
-        <div className="text-center">
+        <div className="py-5 text-center shadow-lg hover:shadow-lg hover:shadow-blue-300/30 transition-shadow">
           <div className="text-2xl font-bold text-white">
             {Object.values(userProgress.dailyHistory).filter(count => count > 0).length}
           </div>
