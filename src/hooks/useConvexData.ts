@@ -1,8 +1,8 @@
 import { useQuery, useMutation } from "convex/react";
-import { api } from "../../convex/_generated/api";
+import { api } from "@convex/_generated/api";
 import { useUserId } from "./useUserId";
 import { UserGoals, UserProgress, Task, Milestone, Achievement } from "../types";
-import { Id } from "../../convex/_generated/dataModel";
+import { Id } from "@convex/_generated/dataModel";
 
 export function useConvexData() {
   const userId = useUserId();
